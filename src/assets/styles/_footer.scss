@@ -1,0 +1,22 @@
+.main-footer {
+  width: 100%;
+  padding: 2rem 0;
+}
+.footer-profile-lists {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+}
+.footer-profile-item {
+  width: 30px;
+  display: block;
+  &.cake {
+    width: 70px;
+  }
+  img {
+    width: 100%;
+    vertical-align: middle;
+  }
+}

@@ -1,0 +1,184 @@
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/bootstrap";
+
+@import "./navbar";
+@import "./index";
+@import "./footer";
+@import "./pages";
+@import "./product";
+@import "./chart";
+@import "./productInner";
+@import "./cart";
+@import "./login";
+@import "./reset.css";
+
+* body {
+  font-family: "Roboto Slab", "Noto Sans TC", serif;
+  max-width: 1920px;
+}
+
+body {
+  background: linear-gradient(45deg, #da0cfa 0%, #ff4b57 49%, #da0cfa 82%);
+  background-size: 200%;
+  animation: aurora 10s infinite linear;
+  position: relative;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-size: 200%;
+  animation: aurora 7s infinite linear;
+  z-index: -1;
+}
+
+body::after {
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0.15) 70%
+  );
+  mix-blend-mode: overlay;
+}
+
+@keyframes aurora {
+  0% {
+    background-position: left top;
+  }
+  25% {
+    background-position: right top;
+  }
+  50% {
+    background-position: right bottom;
+  }
+  75% {
+    background-position: left bottom;
+  }
+  100% {
+    background-position: left top;
+  }
+}
+
+.wrap {
+  position: relative;
+  max-width: 1920px;
+}
+
+.sr-only {
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+}
+
+/* hb.icon */
+.menu-button-container {
+  display: none;
+  height: 100%;
+  width: auto;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  transform: translateY(-10%);
+}
+
+#menu-toggle {
+  display: none;
+}
+
+.menu-button,
+.menu-button::before,
+.menu-button::after {
+  display: block;
+  background-color: #fff;
+  position: absolute;
+  width: 2px;
+  height: 14px;
+  border-radius: 3px;
+  transition: transform 400ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.menu-button::before {
+  content: "";
+  margin-left: -5px;
+  margin-top: 0;
+}
+
+.menu-button::after {
+  content: "";
+  margin-left: 5px;
+  margin-top: 0;
+}
+
+#menu-toggle:checked + .menu-button-container .menu-button::before {
+  margin-left: 0;
+  transform: rotate(45deg);
+}
+
+#menu-toggle:checked + .menu-button-container .menu-button {
+  background: rgba(255, 255, 255, 0);
+}
+
+#menu-toggle:checked + .menu-button-container .menu-button::after {
+  margin-left: 0;
+  transform: rotate(-45deg);
+}
+
+/* FOR漢堡圖示show/hide */
+@media (max-width: 992px) {
+  .menu-button-container {
+    display: flex;
+  }
+}
+
+/* bs漢堡相關設定 */
+.navbar-toggler {
+  border: none;
+  margin-left: auto;
+  height: 85px;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+.nav-link:focus-visible {
+  box-shadow: none;
+}
+.hb-btn-container {
+  width: 46px;
+  height: 46px;
+  outline: 2px solid #fff;
+  padding: 5px;
+  border-radius: 30px;
+  background-color: transparent;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  position: relative;
+  span {
+    font-size: 10px;
+    color: #fff;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: auto;
+    transform: translateY(-175%);
+    pointer-events: none;
+  }
+}
+/* bs漢堡相關設定 */
+.navbar-toggler {
+  border: none;
+  margin-left: auto;
+  height: 85px;
+}
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+.nav-link:focus-visible {
+  box-shadow: none;
+}

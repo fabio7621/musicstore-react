@@ -1,0 +1,244 @@
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+.indexSwiper {
+  .swiper-slide {
+    aspect-ratio: 401/797;
+    padding: 26px 30px;
+    background-color: #ffffff71;
+    position: relative;
+    > i {
+      font-size: 20px;
+      color: #000;
+      position: absolute;
+      top: 40px;
+      right: 40px;
+    }
+    @media (max-width: 992px) {
+      padding: 1rem;
+      // aspect-ratio: 1/1;
+    }
+  }
+
+  .swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  }
+}
+
+.index-products {
+  padding: 100px 0 60px;
+  @media (max-width: 992px) {
+    padding: 30px 0 30px;
+  }
+  .index-products-main {
+    width: 60%;
+    margin: auto;
+    .index-products-title {
+      h2 {
+        font-size: 40px;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        color: #fff;
+        margin-bottom: 0.5em;
+        @media (max-width: 992px) {
+          font-size: 26px;
+        }
+        span {
+          font-size: 25px;
+          @media (max-width: 992px) {
+            font-size: 18px;
+          }
+        }
+      }
+    }
+    @media (max-width: 992px) {
+      width: 82%;
+    }
+  }
+}
+.indexSwiper {
+  padding-bottom: 50px;
+}
+.swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+}
+.swiper-pagination-bullet-active {
+  background-color: #fff;
+}
+.pages-chart-btn {
+  width: 240px;
+  position: fixed;
+  text-decoration: none;
+  top: 40vh;
+  left: 50px;
+  img {
+    width: 100%;
+    vertical-align: middle;
+    animation: rotatechart 10s linear infinite;
+  }
+  .chart-btn-box {
+    gap: 6px;
+    margin: auto;
+    position: absolute;
+    inset: 0;
+    top: -15%;
+    .chart-btn-item {
+      display: block;
+      width: 10px;
+      height: 10px;
+      background-color: #fff;
+      opacity: 0.6;
+      transition: 0.2s;
+      &.long {
+        animation: cha01 1.2s infinite 1.6s;
+      }
+      &.short {
+        animation: cha02 1.2s infinite;
+      }
+    }
+  }
+}
+.pages-chart-btn-word {
+  text-align: center;
+  display: block;
+  transform: translateY(-4em);
+  color: #fff;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  font-size: 20px;
+  text-align: center;
+}
+.top-nav-box {
+  gap: 6px;
+  @media (max-width: 992px) {
+    margin: 20px 0 0 4em;
+  }
+  .top-nav-item {
+    width: 26px;
+    img {
+      width: 100%;
+    }
+  }
+}
+.indexbtn {
+  width: auto;
+  margin-top: 36px;
+  padding: 16px 36px;
+  color: #fff;
+  border: 1px solid #fff;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  background-color: transparent;
+  display: block;
+  transition: 0.2s ease;
+  &:hover {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  }
+}
+
+@keyframes rotatechart {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.index-product-banner {
+  padding: 60px 0 100px;
+  @media (max-width: 992px) {
+    padding: 0px 0 60px;
+  }
+  .index-product-main {
+    width: 60%;
+    margin: auto;
+    h2 {
+      font-size: 20px;
+      margin-bottom: 1rem;
+      font-weight: 500;
+      color: #fff;
+      text-align: center;
+    }
+    @media (max-width: 992px) {
+      width: 82%;
+    }
+    .index-product-pic {
+      position: relative;
+      img {
+        width: 100%;
+        vertical-align: middle;
+      }
+    }
+    .index-product-content {
+      position: absolute;
+      inset: 0;
+      width: 96%;
+      height: 90%;
+      background-color: #ffffff38;
+      margin: auto;
+      display: flex;
+      a {
+        font-size: 20px;
+        color: #fff;
+        margin: auto;
+        text-decoration: none;
+        position: relative;
+        line-height: 1.4;
+        @media (max-width: 992px) {
+          animation: none;
+          font-size: 13px;
+        }
+        &::before {
+          content: "";
+          position: absolute;
+          right: calc(100% + 10px);
+          top: 50%;
+          display: block;
+          width: 10px;
+          height: 2px;
+          background-color: #fff;
+          margin-right: 10px;
+          animation: pan 6s linear infinite;
+          @media (max-width: 992px) {
+            width: 2rem;
+            animation: none;
+          }
+        }
+      }
+    }
+  }
+}
+@keyframes pan {
+  from {
+    width: 10px;
+  }
+  to {
+    width: 100px;
+  }
+}
+@keyframes cha01 {
+  0% {
+    height: 10px;
+  }
+  50% {
+    height: 30px;
+  }
+  100% {
+    height: 50px;
+  }
+}
+@keyframes cha02 {
+  from {
+    height: 10px;
+  }
+  to {
+    height: 40px;
+  }
+}

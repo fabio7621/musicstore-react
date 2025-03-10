@@ -1,0 +1,46 @@
+.main-header {
+  @media (max-width: 992px) {
+    position: sticky;
+    inset: 0;
+    width: 100%;
+    z-index: 999;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  }
+}
+
+.section-header-top {
+  width: 100%;
+  padding: 60px 0 20px;
+}
+.section-header-logo {
+  width: 517px;
+  margin: auto;
+  @media (max-width: 992px) {
+    width: 237px;
+  }
+  img {
+    width: 100%;
+    vertical-align: middle;
+  }
+}
+.navbar {
+  background-color: transparent !important;
+}
+.music-navbar-main {
+  .nav-item {
+    > a {
+      font-size: 20px;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      @media (max-width: 992px) {
+        text-indent: 3em;
+      }
+    }
+  }
+}
+@media (max-width: 992px) {
+  .navbar-nav {
+    background-color: #ffffff69;
+  }
+}

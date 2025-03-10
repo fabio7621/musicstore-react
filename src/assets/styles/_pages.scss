@@ -1,0 +1,34 @@
+.pages-bread-main {
+  width: 68%;
+  margin: auto;
+  @media (max-width: 992px) {
+    width: 88%;
+  }
+}
+.pages-bread {
+  padding: 1rem;
+
+  .pages-bread-nav {
+    display: flex;
+    align-items: center;
+    li {
+      display: flex;
+      align-items: center;
+      & + li {
+        &::before {
+          content: "";
+          display: block;
+          width: 1px;
+          height: 1em;
+          background-color: #fff;
+          margin: 0 10px;
+        }
+      }
+      a {
+        text-decoration: none;
+        color: #fff;
+        letter-spacing: 0.05em;
+      }
+    }
+  }
+}
