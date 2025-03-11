@@ -12,7 +12,7 @@ export default function FrontHeader() {
       <div className="section-header-top d-none d-md-block">
         <NavLink to={"/"} className="section-header-logo d-block">
           <img
-            src="@/../../../../public/icon/SEVEN07 Music Store.svg"
+            src="@/../../../../public/icon/seven07musicstore.svg"
             alt="logo"
           />
         </NavLink>
@@ -22,7 +22,7 @@ export default function FrontHeader() {
           <h1 className="sr-only">SEVEN07musicStore</h1>
           <NavLink to={"/"} className="section-header-logo d-block d-md-none">
             <img
-              src="@/../../../../public/icon/SEVEN07 Music Store.svg"
+              src="@/../../../../public/icon/seven07musicstore.svg"
               alt="logo"
             />
           </NavLink>

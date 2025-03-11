@@ -26,7 +26,7 @@ export default function FrontFooter() {
             className="footer-profile-item cake"
           >
             <img
-              src="@/../../../../public/icon/cake.9d3a50b4 1.png"
+              src="@/../../../../public/icon/cakelogo.png"
               alt="footercake"
             />
           </a>

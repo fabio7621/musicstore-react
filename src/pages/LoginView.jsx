@@ -1,47 +1,75 @@
 import { useState } from "react";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { pushMessage } from "../redux/toastSlice";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const apiUrl = import.meta.env.VITE_BASE_URL;
+  const dispatch = useDispatch();
 
-  const handleLogin = () => {
-    console.log("Email:", email);
-    console.log("Password:", password);
-    // 在這裡可以加入登入 API 呼叫
+  const [account, setAccount] = useState({
+    username: "example@test.com",
+    password: "example",
+  });
+
+  const handleInputChange = (e) => {
+    const { value, name } = e.target;
+
+    setAccount({
+      ...account,
+      [name]: value,
+    });
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(`${apiUrl}/v2/admin/signin`, account);
+      const { token, expired } = res.data;
+
+      document.cookie = `fabio20=${token}; expires=${new Date(
+        expired
+      ).toUTCString()}; path=/`;
+      axios.defaults.headers.common["Authorization"] = token;
+
+      dispatch(pushMessage({ text: "登入成功", status: "success" }));
+    } catch (error) {
+      const message = error.response?.data?.message || "登入失敗，請稍後再試";
+      dispatch(pushMessage({ text: message, status: "failed" }));
+    }
   };
 
   return (
     <section className="page-product">
       <div className="page-product-main">
         <div className="page-login-content">
-          <div className="page-login-form">
+          <form onSubmit={handleLogin} className="page-login-form">
             <h1>LOGIN</h1>
             <div className="page-login-item">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="username">Email</label>
               <input
-                id="email"
+                name="username"
+                value={account.username}
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="username"
+                onChange={handleInputChange}
               />
             </div>
             <div className="page-login-item">
               <label htmlFor="password">Password</label>
               <input
-                id="password"
+                name="password"
+                value={account.password}
+                onChange={handleInputChange}
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                id="password"
+                placeholder="Password"
               />
             </div>
-            <button
-              className="mx-auto loginbtn"
-              type="button"
-              onClick={handleLogin}
-            >
+            <button type="submit" className="mx-auto loginbtn">
               gogo!!
             </button>
-          </div>
+          </form>
         </div>
       </div>
     </section>
