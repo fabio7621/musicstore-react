@@ -6,6 +6,10 @@ import CartsView from "../pages/CartsView.jsx";
 import ChartView from "../pages/ChartView.jsx";
 import FrontLayout from "../layout/FrontLayout";
 import NotfoundView from "../pages/NotfoundView.jsx";
+import AdminLayout from "../layout/AdminLayout.jsx";
+
+import AdminProducts from "../pages/admin/AdminProducts.jsx";
+
 const router = createHashRouter([
   {
     path: "/",
@@ -16,27 +20,37 @@ const router = createHashRouter([
         element: <HomeView />,
       },
       {
-        path: "/login",
+        path: "login",
         element: <LoginView />,
       },
       {
-        path: "/products",
+        path: "products",
         element: <ProductView />,
       },
       {
-        path: "/cart",
+        path: "cart",
         element: <CartsView />,
       },
       {
-        path: "/chart",
+        path: "chart",
         element: <ChartView />,
       },
     ],
   },
-
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        path: "products",
+        element: <AdminProducts />,
+      },
+    ],
+  },
   {
     path: "*",
     element: <NotfoundView />,
   },
 ]);
+
 export default router;

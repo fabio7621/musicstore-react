@@ -2,11 +2,12 @@ import { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { pushMessage } from "../redux/toastSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const apiUrl = import.meta.env.VITE_BASE_URL;
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const [account, setAccount] = useState({
     username: "example@test.com",
     password: "example",
@@ -33,6 +34,7 @@ export default function LoginPage() {
       axios.defaults.headers.common["Authorization"] = token;
 
       dispatch(pushMessage({ text: "登入成功", status: "success" }));
+      navigate("/admin/products");
     } catch (error) {
       const message = error.response?.data?.message || "登入失敗，請稍後再試";
       dispatch(pushMessage({ text: message, status: "failed" }));
