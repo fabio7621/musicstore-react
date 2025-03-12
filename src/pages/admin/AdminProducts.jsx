@@ -5,7 +5,7 @@ import PagePagination from "../../components/PagePagination";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { pushMessage } from "../redux/toastSlice";
+import { pushMessage } from "../../redux/toastSlice";
 
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
@@ -20,7 +20,6 @@ export default function AdminProducts() {
         `${apiUrl}/v2/api/${apiPath}/admin/products?page=${page}`
       );
       setProducts(res.data.products);
-
       setPagination(res.data.pagination);
     } catch (error) {
       const { message } = error.response.data;
