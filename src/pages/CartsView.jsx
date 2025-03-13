@@ -138,7 +138,7 @@ export default function CartPage() {
                     </div>
                   </td>
                   <td>
-                    <input
+                    {/* <input
                       className=""
                       type="text"
                       name="quantity1"
@@ -150,7 +150,42 @@ export default function CartPage() {
                           e.target.value
                         )
                       }
-                    />
+                    /> */}
+                    <div className="btn-group me-2" role="group">
+                      <button
+                        onClick={() =>
+                          updateCart(
+                            cartItem.id,
+                            cartItem.product_id,
+                            cartItem.qty - 1
+                          )
+                        }
+                        type="button"
+                        className="btn btn-outline-dark btn-sm"
+                        disabled={cartItem.qty === 1}
+                      >
+                        -
+                      </button>
+                      <span
+                        className="btn border border-dark"
+                        style={{ width: "50px", cursor: "auto" }}
+                      >
+                        {cartItem.qty}
+                      </span>
+                      <button
+                        onClick={() =>
+                          updateCart(
+                            cartItem.id,
+                            cartItem.product_id,
+                            cartItem.qty + 1
+                          )
+                        }
+                        type="button"
+                        className="btn btn-outline-dark btn-sm"
+                      >
+                        +
+                      </button>
+                    </div>
                   </td>
                   <td>{cartItem.product.price}</td>
                   <td>
@@ -198,28 +233,82 @@ export default function CartPage() {
           </table>
 
           {/* 訂單表單 */}
-          <form className="page-shop-form" action="">
+          <form onSubmit={onSubmit} className="page-shop-form">
             <div className="shop-form-item">
-              <label>Email</label>
-              <input type="email" name="email" />
+              <label htmlFor="email">Email</label>
+              <input
+                {...register("email", {
+                  required: "email必填",
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: "格式錯誤",
+                  },
+                })}
+                className={errors.email ? "is-invalid" : ""}
+                type="email"
+                name="email"
+              />
+              {errors.email && (
+                <p className="text-danger my-2">{errors.email?.message}</p>
+              )}
             </div>
+
             <div className="shop-form-item">
-              <label>收件人</label>
-              <input type="text" name="receiver" />
+              <label htmlFor="name">收件人</label>
+              <input
+                {...register("name", { required: "請輸入姓名" })}
+                type="text"
+                name="name" // ✅ 修正成 "name"
+                className={errors.name ? "is-invalid" : ""}
+              />
+              {errors.name && (
+                <p className="text-danger my-2">{errors.name?.message}</p>
+              )}
             </div>
+
             <div className="shop-form-item">
-              <label>電話</label>
-              <input type="text" name="phone" />
+              <label htmlFor="tel">電話</label>
+              <input
+                {...register("tel", {
+                  required: "電話必填",
+                  pattern: {
+                    value: /^(0[2-8]\d{7}|09\d{8})$/,
+                    message: "格式錯誤，請輸入正確的電話號碼",
+                  },
+                })}
+                id="tel"
+                type="tel"
+                className={errors.tel ? "is-invalid" : ""}
+                placeholder="請輸入電話"
+              />
+              {errors.tel && (
+                <p className="text-danger my-2">{errors.tel?.message}</p>
+              )}
             </div>
+
             <div className="shop-form-item">
-              <label>地址</label>
-              <input type="text" name="address" />
+              <label htmlFor="address">地址</label>
+              <input
+                {...register("address", { required: "請輸入地址" })}
+                id="address"
+                type="text"
+                placeholder="請輸入地址"
+              />
+              {errors.address && (
+                <p className="text-danger my-2">{errors.address?.message}</p>
+              )}
             </div>
+
             <div className="shop-form-item">
-              <label>留言</label>
-              <textarea name="message"></textarea>
+              <label htmlFor="message">留言</label>
+              <textarea
+                {...register("message")}
+                id="message"
+                name="message"
+              ></textarea>
             </div>
-            <button className="page-shop-btn mx-auto" type="button">
+
+            <button className="page-shop-btn mx-auto" type="submit">
               送出訂單
             </button>
           </form>
