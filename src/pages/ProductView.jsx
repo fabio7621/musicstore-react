@@ -1,21 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import ReactLoading from "react-loading";
+import axios from "axios";
 
-const albums = [
-  { id: 1, title: "LISA / ALTER EGO", img: "/music/1444.jpg" },
-  { id: 2, title: "LISA / ALTER EGO", img: "/music/1444.jpg" },
-  { id: 3, title: "LISA / ALTER EGO", img: "/music/1444.jpg" },
-  { id: 4, title: "LISA / ALTER EGO", img: "/music/1444.jpg" },
-  { id: 5, title: "LISA / ALTER EGO", img: "/music/1444.jpg" },
-  { id: 6, title: "LISA / ALTER EGO", img: "/music/1444.jpg" },
-];
+const apiUrl = import.meta.env.VITE_BASE_URL;
+const apiPath = import.meta.env.VITE_API_PATH;
 
 export default function ProductPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("high");
+  const [pagination, setPagination] = useState({});
+  // const filteredAlbums = albums.filter((album) =>
+  //   album.title.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
+  const [products, setProducts] = useState([]);
+  const [isLoading, setLoading] = useState(false);
+  // const [smallIsLoading, setSmallLoading] = useState(false);
 
-  const filteredAlbums = albums.filter((album) =>
-    album.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const getProducts = async (page = 1) => {
+    setLoading(true);
+    try {
+      const res = await axios.get(
+        `${apiUrl}/v2/api/${apiPath}/products?page=${page}`
+      );
+      setPagination(res.data.pagination);
+      setProducts(res.data.products);
+    } catch (error) {
+      alert("取得產品失敗", `${error}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const pagesChange = (page) => {
+    getProducts(page);
+  };
+  useEffect(() => {
+    getProducts();
+  }, []);
 
   return (
     <>
@@ -44,7 +64,7 @@ export default function ProductPage() {
                   <button type="button">English</button>
                 </li>
                 <li>
-                  <button type="button">Chinese</button>
+                  <button type="button">Taiwan</button>
                 </li>
                 <li>
                   <button type="button">All</button>
@@ -83,44 +103,55 @@ export default function ProductPage() {
           </div>
 
           <div className="page-product-lists">
-            {filteredAlbums.map((album) => (
-              <div key={album.id} className="page-product-item">
+            {products.map((item) => (
+              <div key={item.id} className="page-product-item">
                 <div className="product-item-pic">
-                  <img src={album.img} alt="album" />
+                  <img src={item.imageUrl} alt="album" />
                   <i className="bi bi-heart"></i>
                   {/* <i className="bi bi-heart-fill"></i> */}
                 </div>
-                <span>{album.title}</span>
+                <span>{item.title}</span>
               </div>
             ))}
           </div>
 
-          <nav className="pages-pagination">
-            <ul className="pagination mx-auto">
-              <li className="page-item">
-                <a className="page-link" href="#" aria-label="Previous">
-                  <span aria-hidden="true">&laquo;</span>
-                </a>
+          <nav className="w-100 col mx-auto">
+            <ul
+              className="mx-auto pagination mt-5"
+              style={{ width: "fit-content" }}
+            >
+              <li
+                className={`page-item ${!pagination.has_pre && "disabled"}`}
+                onClick={() => pagesChange(pagination.current_page - 1)}
+              >
+                <button className="page-link">上一頁</button>
               </li>
-              <li className="page-item active">
-                <a className="page-link active" href="#">
-                  1
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  2
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#">
-                  3
-                </a>
-              </li>
-              <li className="page-item">
-                <a className="page-link" href="#" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-                </a>
+
+              {Array.from({ length: pagination.total_pages }).map(
+                (_, index) => (
+                  <li
+                    key={index}
+                    className={`page-item ${
+                      pagination.current_page === index + 1 && "active"
+                    }`}
+                  >
+                    <button
+                      onClick={() => pagesChange(index + 1)}
+                      className="page-link"
+                    >
+                      {index + 1}
+                    </button>
+                  </li>
+                )
+              )}
+
+              <li className={`page-item ${!pagination.has_next && "disabled"}`}>
+                <button
+                  onClick={() => pagesChange(pagination.current_page + 1)}
+                  className="page-link"
+                >
+                  下一頁
+                </button>
               </li>
             </ul>
           </nav>
