@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import ReactLoading from "react-loading";
-import axios from "axios";
 
+import axios from "axios";
+import { Link } from "react-router-dom";
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
 
@@ -104,14 +105,18 @@ export default function ProductPage() {
 
           <div className="page-product-lists">
             {products.map((item) => (
-              <div key={item.id} className="page-product-item">
+              <Link
+                to={`/products/${item.id}`}
+                key={item.id}
+                className="page-product-item"
+              >
                 <div className="product-item-pic">
                   <img src={item.imageUrl} alt="album" />
                   <i className="bi bi-heart"></i>
                   {/* <i className="bi bi-heart-fill"></i> */}
                 </div>
                 <span>{item.title}</span>
-              </div>
+              </Link>
             ))}
           </div>
 

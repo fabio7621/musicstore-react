@@ -7,8 +7,8 @@ import ChartView from "../pages/ChartView.jsx";
 import FrontLayout from "../layout/FrontLayout";
 import NotfoundView from "../pages/NotfoundView.jsx";
 import AdminLayout from "../layout/AdminLayout.jsx";
-
 import AdminProducts from "../pages/admin/AdminProducts.jsx";
+import ProductInner from "../pages/ProductInner.jsx";
 
 const router = createHashRouter([
   {
@@ -26,6 +26,10 @@ const router = createHashRouter([
       {
         path: "products",
         element: <ProductView />,
+      },
+      {
+        path: "products/:id",
+        element: <ProductInner />,
       },
       {
         path: "cart",
