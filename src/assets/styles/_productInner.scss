@@ -54,7 +54,8 @@
     flex-shrink: 0;
     margin-right: 10px;
   }
-  input {
+  input,
+  select {
     width: 0;
     flex-grow: 1;
     height: 40px;

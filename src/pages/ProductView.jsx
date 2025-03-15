@@ -1,43 +1,82 @@
 import { useState, useEffect } from "react";
-import ReactLoading from "react-loading";
-
 import axios from "axios";
 import { Link } from "react-router-dom";
+
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
+
+const musicCategories = [
+  { name: "Taiwan", value: "taiwan" },
+  { name: "All", value: "all" },
+  { name: "Hip Hop", value: "hiphop" },
+  { name: "J-pop", value: "japan" },
+  { name: "K-pop", value: "korea" },
+];
 
 export default function ProductPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("high");
   const [pagination, setPagination] = useState({});
-  // const filteredAlbums = albums.filter((album) =>
-  //   album.title.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
   const [products, setProducts] = useState([]);
-  const [isLoading, setLoading] = useState(false);
-  // const [smallIsLoading, setSmallLoading] = useState(false);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [currentCategory, setCurrentCategory] = useState("all"); // 新增 state 來追蹤當前類別
 
-  const getProducts = async (page = 1) => {
-    setLoading(true);
+  const getProducts = async (page = 1, category = "") => {
     try {
       const res = await axios.get(
-        `${apiUrl}/v2/api/${apiPath}/products?page=${page}`
+        `${apiUrl}/v2/api/${apiPath}/products?category=${category}&page=${page}`
       );
       setPagination(res.data.pagination);
       setProducts(res.data.products);
+      setFilteredProducts(res.data.products); // 取得新資料後更新 filteredProducts
     } catch (error) {
       alert("取得產品失敗", `${error}`);
-    } finally {
-      setLoading(false);
     }
   };
-  const pagesChange = (page) => {
-    getProducts(page);
+
+  const filterProductsByCategory = (category) => {
+    setCurrentCategory(category); // 更新當前類別
+    getProducts(1, category); // 呼叫 API 取得該類別的資料，並回到第一頁
   };
+
+  const filterProducts = () => {
+    let tempProducts = [...products];
+
+    // 根據關鍵字搜尋 (在取得特定類別資料後再搜尋)
+    if (searchTerm) {
+      const lowerSearchTerm = searchTerm.toLowerCase();
+      tempProducts = tempProducts.filter(
+        (item) =>
+          item.title.toLowerCase().includes(lowerSearchTerm) ||
+          (item.singer && item.singer.toLowerCase().includes(lowerSearchTerm))
+      );
+    }
+
+    // 根據價格排序 (在取得特定類別資料後再排序)
+    if (sortOrder === "high") {
+      tempProducts.sort((a, b) => b.price - a.price);
+    } else if (sortOrder === "low") {
+      tempProducts.sort((a, b) => a.price - b.price);
+    }
+
+    setFilteredProducts(tempProducts);
+  };
+
+  const pagesChange = (page) => {
+    getProducts(page, currentCategory);
+  };
+
+  useEffect(() => {
+    getProducts(1, currentCategory);
+  }, [currentCategory]);
+
+  useEffect(() => {
+    filterProducts();
+  }, [searchTerm, sortOrder, products]);
+
   useEffect(() => {
     getProducts();
   }, []);
-
   return (
     <>
       <section className="pages-bread">
@@ -47,7 +86,7 @@ export default function ProductPage() {
               <a href="/">Index</a>
             </li>
             <li>
-              <a href="/music-products">Music Products</a>
+              <a>Music Products</a>
             </li>
           </ul>
         </div>
@@ -61,21 +100,18 @@ export default function ProductPage() {
             </div>
             <div className="page-product-navbar d-flex align-items-center justify-center flex-column">
               <ul className="product-navbar-list">
-                <li>
-                  <button type="button">English</button>
-                </li>
-                <li>
-                  <button type="button">Taiwan</button>
-                </li>
-                <li>
-                  <button type="button">All</button>
-                </li>
-                <li>
-                  <button type="button">J-pop</button>
-                </li>
-                <li>
-                  <button type="button">K-pop</button>
-                </li>
+                {musicCategories.map((categoryItem) => (
+                  <li key={categoryItem.value}>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        filterProductsByCategory(categoryItem.value)
+                      }
+                    >
+                      {categoryItem.name}
+                    </button>
+                  </li>
+                ))}
               </ul>
               <div className="search-music">
                 <input
@@ -104,7 +140,7 @@ export default function ProductPage() {
           </div>
 
           <div className="page-product-lists">
-            {products.map((item) => (
+            {filteredProducts.map((item) => (
               <Link
                 to={`/products/${item.id}`}
                 key={item.id}
@@ -116,6 +152,7 @@ export default function ProductPage() {
                   {/* <i className="bi bi-heart-fill"></i> */}
                 </div>
                 <span>{item.title}</span>
+                <span>${item.price}</span>
               </Link>
             ))}
           </div>

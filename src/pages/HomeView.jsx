@@ -1,9 +1,31 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Swiper from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
 
+import axios from "axios";
+import { Link } from "react-router-dom";
+const apiUrl = import.meta.env.VITE_BASE_URL;
+const apiPath = import.meta.env.VITE_API_PATH;
+
 export default function HomeView() {
+  const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const getProducts = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/products/all`);
+
+      setProducts(res.data.products);
+    } catch (error) {
+      alert("取得產品失敗", `${error}`);
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
   useEffect(() => {
     new Swiper(".indexSwiper", {
       slidesPerView: 3,
@@ -34,16 +56,23 @@ export default function HomeView() {
           </div>
           <div className="swiper indexSwiper">
             <div className="swiper-wrapper">
-              {[...Array(5)].map((_, index) => (
-                <div key={index} className="swiper-slide">
-                  <img src="@/../../../public/music/1444.jpg" alt="lisa" />
-                  <i className="bi bi-heart"></i>
+              {products.map((product) => (
+                <div key={product.id} className="swiper-slide">
+                  <Link to={`/product/${product.id}`}>
+                    <img src={product.imageUrl} alt={product.title} />
+                    <i className="bi bi-heart"></i>
+                  </Link>
                 </div>
               ))}
             </div>
             <div className="swiper-pagination"></div>
           </div>
-          <button className="indexbtn mx-auto">Watch more!!</button>
+          <button
+            onClick={() => navigate("/products")}
+            className="indexbtn mx-auto"
+          >
+            Watch more!!
+          </button>
         </div>
       </section>
       <section className="index-product-banner">
@@ -55,7 +84,7 @@ export default function HomeView() {
               alt="product-banner"
             />
             <div className="index-product-content">
-              <a href="#">Click me! Find your music</a>
+              <Link to="/products">Click me! Find your music</Link>
             </div>
           </div>
         </div>

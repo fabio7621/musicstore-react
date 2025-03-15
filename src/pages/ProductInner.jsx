@@ -1,10 +1,46 @@
-import { useEffect } from "react";
-import Swiper from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
+import { useEffect, useState } from "react";
+import Swiper from "swiper";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
+const apiUrl = import.meta.env.VITE_BASE_URL;
+const apiPath = import.meta.env.VITE_API_PATH;
 export default function ProductInner() {
+  const { id } = useParams();
+  const [product, setProduct] = useState({});
+  const [smallIsLoading, setSmallLoading] = useState(false);
+  const [qtySelect, setQtySelect] = useState(1);
+  const navigate = useNavigate();
+
+  const getProducts = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/product/${id}`);
+      setProduct(res.data.product);
+    } catch (error) {
+      alert("取得產品失敗", `${error}`);
+    }
+  };
+  const addToCart = async (product_id, qty) => {
+    setSmallLoading(true);
+    try {
+      const res = await axios.post(`${apiUrl}/v2/api/${apiPath}/cart`, {
+        data: { product_id, qty: Number(qty) },
+      });
+
+      setSmallLoading(false);
+      setQtySelect(1);
+      alert("加入購物車成功");
+    } catch (error) {
+      alert("加入購物車失敗", `${error}`);
+    }
+  };
+  useEffect(() => {
+    getProducts();
+  }, []);
+
   useEffect(() => {
     const swiperThumbs = new Swiper(".innerSwiper", {
       spaceBetween: 10,
@@ -34,7 +70,7 @@ export default function ProductInner() {
               <a href="#">Index</a>
             </li>
             <li>
-              <a href="#">Lisa-ALTER EGO</a>
+              <a>{product.title}</a>
             </li>
           </ul>
         </div>
@@ -53,77 +89,75 @@ export default function ProductInner() {
                   <div className="inner-swiper">
                     <div className="swiper innerSwiper2">
                       <div className="swiper-wrapper">
-                        <div className="swiper-slide">
-                          <img src="/music/1444.jpg" alt="Album" />
-                        </div>
-                        <div className="swiper-slide">
-                          <img src="/music/1444.jpg" alt="Album" />
-                        </div>
-                        <div className="swiper-slide">
-                          <img src="/music/1444.jpg" alt="Album" />
-                        </div>
-                        <div className="swiper-slide">
-                          <img src="/music/1444.jpg" alt="Album" />
-                        </div>
-                        <div className="swiper-slide">
-                          <img src="/music/1444.jpg" alt="Album" />
-                        </div>
+                        {product.imageUrl && (
+                          <div className="swiper-slide">
+                            <img src={product.imageUrl} alt="Main Image" />
+                          </div>
+                        )}
+
+                        {product.imagesUrl?.map((image, index) => (
+                          <div className="swiper-slide" key={index}>
+                            <img src={image} alt={`Thumbnail ${index}`} />
+                          </div>
+                        ))}
                       </div>
                     </div>
                     <div className="swiper innerSwiper">
                       <div className="swiper-wrapper">
-                        <div className="swiper-slide">
-                          <img src="/music/1444.jpg" alt="Thumbnail" />
-                        </div>
-                        <div className="swiper-slide">
-                          <img src="/music/1444.jpg" alt="Thumbnail" />
-                        </div>
-                        <div className="swiper-slide">
-                          <img src="/music/1444.jpg" alt="Thumbnail" />
-                        </div>
-                        <div className="swiper-slide">
-                          <img src="/music/1444.jpg" alt="Thumbnail" />
-                        </div>
-                        <div className="swiper-slide">
-                          <img src="/music/1444.jpg" alt="Thumbnail" />
-                        </div>
+                        {product.imageUrl && (
+                          <div className="swiper-slide">
+                            <img src={product.imageUrl} alt="Main Image" />
+                          </div>
+                        )}
+
+                        {product.imagesUrl?.map((image, index) => (
+                          <div className="swiper-slide" key={index}>
+                            <img src={image} alt={`Thumbnail ${index}`} />
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="col-12 col-md-6 p-0">
                   <div className="inner-product-profile">
-                    <h2>Lisa-ALTER EGO</h2>
-                    <p>
-                      Instagram全球億人追蹤、個人串流超過20億收聽，引領全球時尚的女王
-                      LISA 出道8年終於推出個人首張專輯《雙生自我 ALTER
-                      EGO》，收錄2024年化身巨星的酷帥主題曲〈Rockstar〉、攜手西班牙天后
-                      蘿莎莉雅 (ROSALÍA) 共唱完美女力神曲〈New
-                      Woman〉，以及取樣Sixpence None the Richer
-                      經典情歌的〈Moonlit Floor (Kiss
-                      Me)〉等共12首歌，2025年初就聽這張，一聽LISA展現火辣與酷帥的巨星魅力。
-                    </p>
-                    <p>
-                      產品內容：JEWEL CASE CD SUPER JEWEL CASE：1種 HOLOGRAPHIC
-                      STAR STICKER：1種 CD：1張 隨機小卡：15種隨機1
-                    </p>
+                    <h2>{product.title}</h2>
+                    <p>{product.description}</p>
+                    <p>{product.content}</p>
+                    <p> 價格：${product.price}</p>
 
                     <div className="inner-order">
                       <label htmlFor="innerOrder">訂購數量</label>
-                      <input
-                        className="form-control"
-                        type="number"
-                        id="innerOrder"
-                      />
+                      <select
+                        value={qtySelect}
+                        onChange={(e) => setQtySelect(e.target.value)}
+                        id="qtySelect"
+                        className="form-select"
+                      >
+                        {Array.from({ length: 10 }).map((_, index) => (
+                          <option key={index} value={index + 1}>
+                            {index + 1}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                    <button type="button" className="inner-btn">
+                    <button
+                      onClick={() => addToCart(product.id, qtySelect)}
+                      type="button"
+                      className="inner-btn"
+                      disabled={smallIsLoading}
+                    >
                       確認購買
                     </button>
                   </div>
                 </div>
                 <div className="col-12 p-0">
                   <div className="product-inner-bottem">
-                    <button className="back-btn mx-auto" type="button">
+                    <button
+                      onClick={() => navigate(-1)}
+                      className="back-btn mx-auto"
+                      type="button"
+                    >
                       Back!
                     </button>
                   </div>
