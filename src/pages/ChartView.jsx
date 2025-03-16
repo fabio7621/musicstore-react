@@ -1,5 +1,26 @@
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
+import { Bar, Pie } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
@@ -10,7 +31,6 @@ export default function ChartView() {
   const getProducts = async () => {
     try {
       const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/products/all`);
-
       setProducts(res.data.products);
     } catch (error) {
       alert("取得產品失敗", `${error}`);
@@ -26,6 +46,95 @@ export default function ChartView() {
     return [...products].sort((a, b) => b.sales - a.sales).slice(0, 10);
   }, [products]);
 
+  const data = useMemo(() => {
+    const labels = topSales.map((item) => item.singer);
+    const salesData = topSales.map((item) => item.sales);
+
+    return {
+      labels: labels,
+      datasets: [
+        {
+          label: "銷售量",
+          data: salesData,
+          backgroundColor: "rgba(226, 172, 241, 0.2)",
+          borderColor: "#fff",
+          borderWidth: 1,
+        },
+      ],
+    };
+  }, [topSales]);
+
+  const options = useMemo(
+    () => ({
+      responsive: true,
+      plugins: {
+        legend: {
+          position: "top",
+        },
+        title: {
+          display: true,
+          text: "Top 10 Sales Rank",
+        },
+      },
+    }),
+    []
+  );
+
+  const pieChartData = useMemo(() => {
+    const categorySales = {};
+
+    products.forEach((product) => {
+      const category = product.category; // 使用 category 作為分類
+      const sales = product.sales;
+
+      // 如果該 category 尚未存在，初始化為 0
+      if (!categorySales[category]) {
+        categorySales[category] = 0;
+      }
+      categorySales[category] += sales; // 累加每個分類的銷售量
+    });
+
+    // 轉換為 Chart.js 所需的資料格式
+    const labels = Object.keys(categorySales);
+    const salesData = Object.values(categorySales);
+
+    return {
+      labels: labels,
+      datasets: [
+        {
+          label: "Category Sales",
+          data: salesData,
+          backgroundColor: [
+            "rgba(226, 172, 241, 0.6)",
+            "rgba(255, 159, 64, 0.6)",
+            "rgba(75, 192, 192, 0.6)",
+            "rgba(153, 102, 255, 0.6)",
+            "rgba(255, 99, 132, 0.6)",
+            "rgba(54, 162, 235, 0.6)",
+          ], // 每個分類的顏色
+          borderColor: "#fff",
+          borderWidth: 1,
+        },
+      ],
+    };
+  }, [products]);
+
+  // Pie 圖表選項
+  const pieOptions = useMemo(
+    () => ({
+      responsive: true,
+      plugins: {
+        legend: {
+          position: "top",
+        },
+        title: {
+          display: true,
+          text: "Category Sales Distribution",
+        },
+      },
+    }),
+    []
+  );
   return (
     <>
       <section className="pages-bread">
@@ -53,7 +162,6 @@ export default function ChartView() {
                 <div className="col-12 col-md-3">
                   <div className="chart-top10-box d-flex flex-column">
                     <h2>TOP 10</h2>
-
                     {topSales.map((item, index) => (
                       <div className="chart-top10-item" key={item.id}>
                         <div className="chart-top10-pic">
@@ -64,7 +172,7 @@ export default function ChartView() {
                           <span>
                             Top : {index + 1} {item.title}
                           </span>
-                          <div class="chart-top10-sales">
+                          <div className="chart-top10-sales">
                             <span>總銷量：{item.sales}</span>
                           </div>
                         </div>
@@ -76,11 +184,19 @@ export default function ChartView() {
                   <div className="page-chart-main">
                     <div className="page-chart-item">
                       <h3>All sales rank</h3>
-                      <div className="page-chart-target"></div>
+                      <Bar
+                        className="page-chart-target"
+                        data={data}
+                        options={options}
+                      />
                     </div>
                     <div className="page-chart-item">
                       <h3>All style rank</h3>
-                      <div className="page-chart-target"></div>
+                      <Pie
+                        className="page-chart-target pie"
+                        data={pieChartData}
+                        options={pieOptions}
+                      />
                     </div>
                   </div>
                 </div>
