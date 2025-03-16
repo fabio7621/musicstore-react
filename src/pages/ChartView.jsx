@@ -41,7 +41,6 @@ export default function ChartView() {
     getProducts();
   }, []);
 
-  //top sales
   const topSales = useMemo(() => {
     return [...products].sort((a, b) => b.sales - a.sales).slice(0, 10);
   }, [products]);
@@ -84,17 +83,15 @@ export default function ChartView() {
     const categorySales = {};
 
     products.forEach((product) => {
-      const category = product.category; // 使用 category 作為分類
+      const category = product.category;
       const sales = product.sales;
 
-      // 如果該 category 尚未存在，初始化為 0
       if (!categorySales[category]) {
         categorySales[category] = 0;
       }
-      categorySales[category] += sales; // 累加每個分類的銷售量
+      categorySales[category] += sales;
     });
 
-    // 轉換為 Chart.js 所需的資料格式
     const labels = Object.keys(categorySales);
     const salesData = Object.values(categorySales);
 
@@ -111,7 +108,7 @@ export default function ChartView() {
             "rgba(153, 102, 255, 0.6)",
             "rgba(255, 99, 132, 0.6)",
             "rgba(54, 162, 235, 0.6)",
-          ], // 每個分類的顏色
+          ],
           borderColor: "#fff",
           borderWidth: 1,
         },
@@ -119,7 +116,6 @@ export default function ChartView() {
     };
   }, [products]);
 
-  // Pie 圖表選項
   const pieOptions = useMemo(
     () => ({
       responsive: true,
