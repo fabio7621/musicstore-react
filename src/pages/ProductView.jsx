@@ -35,8 +35,9 @@ export default function ProductPage() {
   };
 
   const filterProductsByCategory = (category) => {
-    setCurrentCategory(category); // 更新當前類別
-    getProducts(1, category); // 呼叫 API 取得該類別的資料，並回到第一頁
+    const apiCategory = category === "all" ? "" : category;
+    setCurrentCategory(category);
+    getProducts(1, apiCategory);
   };
 
   const filterProducts = () => {
@@ -63,8 +64,14 @@ export default function ProductPage() {
   };
 
   const pagesChange = (page) => {
-    getProducts(page, currentCategory);
+    const apiCategory = currentCategory === "all" ? "" : currentCategory;
+    getProducts(page, apiCategory);
   };
+
+  useEffect(() => {
+    const apiCategory = currentCategory === "all" ? "" : currentCategory;
+    getProducts(1, apiCategory);
+  }, [currentCategory]);
 
   useEffect(() => {
     getProducts(1, currentCategory);
