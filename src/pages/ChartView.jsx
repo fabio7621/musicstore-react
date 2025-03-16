@@ -1,4 +1,31 @@
+import { useState, useEffect, useMemo } from "react";
+import axios from "axios";
+
+const apiUrl = import.meta.env.VITE_BASE_URL;
+const apiPath = import.meta.env.VITE_API_PATH;
+
 export default function ChartView() {
+  const [products, setProducts] = useState([]);
+
+  const getProducts = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/products/all`);
+
+      setProducts(res.data.products);
+    } catch (error) {
+      alert("取得產品失敗", `${error}`);
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
+  //top sales
+  const topSales = useMemo(() => {
+    return [...products].sort((a, b) => b.sales - a.sales).slice(0, 10);
+  }, [products]);
+
   return (
     <>
       <section className="pages-bread">
@@ -26,162 +53,34 @@ export default function ChartView() {
                 <div className="col-12 col-md-3">
                   <div className="chart-top10-box d-flex flex-column">
                     <h2>TOP 10</h2>
-                    <div className="chart-top10-item">
-                      <div className="chart-top10-pic">
-                        <img
-                          src="@/../../../../public/music/1444.jpg"
-                          alt="lisa"
-                        />
+
+                    {topSales.map((item, index) => (
+                      <div className="chart-top10-item" key={item.id}>
+                        <div className="chart-top10-pic">
+                          <img src={item.imageUrl} alt={item.title} />
+                        </div>
+                        <div className="chart-top10-content d-flex flex-column">
+                          <h3>{item.singer}</h3>
+                          <span>
+                            Top : {index + 1} {item.title}
+                          </span>
+                          <div class="chart-top10-sales">
+                            <span>總銷量：{item.sales}</span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="chart-top10-content d-flex flex-column">
-                        <h3>Lisa</h3>
-                        <span>ALTER EGO</span>
-                      </div>
-                      <div className="chart-top10-sales">
-                        <span>200</span>
-                      </div>
-                    </div>
-                    <div className="chart-top10-item">
-                      <div className="chart-top10-pic">
-                        <img
-                          src="@/../../../../public/music/1444.jpg"
-                          alt="lisa"
-                        />
-                      </div>
-                      <div className="chart-top10-content d-flex flex-column">
-                        <h3>Lisa</h3>
-                        <span>ALTER EGO</span>
-                      </div>
-                      <div className="chart-top10-sales">
-                        <span>200</span>
-                      </div>
-                    </div>
-                    <div className="chart-top10-item">
-                      <div className="chart-top10-pic">
-                        <img
-                          src="@/../../../../public/music/1444.jpg"
-                          alt="lisa"
-                        />
-                      </div>
-                      <div className="chart-top10-content d-flex flex-column">
-                        <h3>Lisa</h3>
-                        <span>ALTER EGO</span>
-                      </div>
-                      <div className="chart-top10-sales">
-                        <span>200</span>
-                      </div>
-                    </div>
-                    <div className="chart-top10-item">
-                      <div className="chart-top10-pic">
-                        <img
-                          src="@/../../../../public/music/1444.jpg"
-                          alt="lisa"
-                        />
-                      </div>
-                      <div className="chart-top10-content d-flex flex-column">
-                        <h3>Lisa</h3>
-                        <span>ALTER EGO</span>
-                      </div>
-                      <div className="chart-top10-sales">
-                        <span>200</span>
-                      </div>
-                    </div>
-                    <div className="chart-top10-item">
-                      <div className="chart-top10-pic">
-                        <img
-                          src="@/../../../../public/music/1444.jpg"
-                          alt="lisa"
-                        />
-                      </div>
-                      <div className="chart-top10-content d-flex flex-column">
-                        <h3>Lisa</h3>
-                        <span>ALTER EGO</span>
-                      </div>
-                      <div className="chart-top10-sales">
-                        <span>200</span>
-                      </div>
-                    </div>
-                    <div className="chart-top10-item">
-                      <div className="chart-top10-pic">
-                        <img
-                          src="@/../../../../public/music/1444.jpg"
-                          alt="lisa"
-                        />
-                      </div>
-                      <div className="chart-top10-content d-flex flex-column">
-                        <h3>Lisa</h3>
-                        <span>ALTER EGO</span>
-                      </div>
-                      <div className="chart-top10-sales">
-                        <span>200</span>
-                      </div>
-                    </div>
-                    <div className="chart-top10-item">
-                      <div className="chart-top10-pic">
-                        <img
-                          src="@/../../../../public/music/1444.jpg"
-                          alt="lisa"
-                        />
-                      </div>
-                      <div className="chart-top10-content d-flex flex-column">
-                        <h3>Lisa</h3>
-                        <span>ALTER EGO</span>
-                      </div>
-                      <div className="chart-top10-sales">
-                        <span>200</span>
-                      </div>
-                    </div>
-                    <div className="chart-top10-item">
-                      <div className="chart-top10-pic">
-                        <img
-                          src="@/../../../../public/music/1444.jpg"
-                          alt="lisa"
-                        />
-                      </div>
-                      <div className="chart-top10-content d-flex flex-column">
-                        <h3>Lisa</h3>
-                        <span>ALTER EGO</span>
-                      </div>
-                      <div className="chart-top10-sales">
-                        <span>200</span>
-                      </div>
-                    </div>
-                    <div className="chart-top10-item">
-                      <div className="chart-top10-pic">
-                        <img
-                          src="@/../../../../public/music/1444.jpg"
-                          alt="lisa"
-                        />
-                      </div>
-                      <div className="chart-top10-content d-flex flex-column">
-                        <h3>Lisa</h3>
-                        <span>ALTER EGO</span>
-                      </div>
-                      <div className="chart-top10-sales">
-                        <span>200</span>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
                 <div className="col-12 col-md-9">
                   <div className="page-chart-main">
                     <div className="page-chart-item">
                       <h3>All sales rank</h3>
-                      <div className="page-chart-target">
-                        <img
-                          src="@/../../../../public/music/154.png"
-                          alt="Sales Rank"
-                        />
-                      </div>
+                      <div className="page-chart-target"></div>
                     </div>
                     <div className="page-chart-item">
                       <h3>All style rank</h3>
-                      <div className="page-chart-target">
-                        <img
-                          src="@/../../../../public/music/154.png"
-                          alt="Style Rank"
-                        />
-                      </div>
+                      <div className="page-chart-target"></div>
                     </div>
                   </div>
                 </div>

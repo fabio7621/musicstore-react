@@ -26,7 +26,7 @@ export default function ProductInner() {
   const addToCart = async (product_id, qty) => {
     setSmallLoading(true);
     try {
-      const res = await axios.post(`${apiUrl}/v2/api/${apiPath}/cart`, {
+      await axios.post(`${apiUrl}/v2/api/${apiPath}/cart`, {
         data: { product_id, qty: Number(qty) },
       });
 
@@ -90,13 +90,13 @@ export default function ProductInner() {
                     <div className="swiper innerSwiper2">
                       <div className="swiper-wrapper">
                         {product.imageUrl && (
-                          <div className="swiper-slide">
+                          <div className="swiper-slide" key="main-image">
                             <img src={product.imageUrl} alt="Main Image" />
                           </div>
                         )}
 
                         {product.imagesUrl?.map((image, index) => (
-                          <div className="swiper-slide" key={index}>
+                          <div className="swiper-slide" key={`image-${index}`}>
                             <img src={image} alt={`Thumbnail ${index}`} />
                           </div>
                         ))}
@@ -105,13 +105,13 @@ export default function ProductInner() {
                     <div className="swiper innerSwiper">
                       <div className="swiper-wrapper">
                         {product.imageUrl && (
-                          <div className="swiper-slide">
+                          <div className="swiper-slide" key="main-image">
                             <img src={product.imageUrl} alt="Main Image" />
                           </div>
                         )}
 
                         {product.imagesUrl?.map((image, index) => (
-                          <div className="swiper-slide" key={index}>
+                          <div className="swiper-slide" key={`image-${index}`}>
                             <img src={image} alt={`Thumbnail ${index}`} />
                           </div>
                         ))}
