@@ -1,18 +1,22 @@
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
+import "swiper/css/free-mode";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Thumbs, FreeMode } from "swiper/modules";
 import { useEffect, useState } from "react";
-import Swiper from "swiper";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
+
 export default function ProductInner() {
   const { id } = useParams();
   const [product, setProduct] = useState({});
   const [smallIsLoading, setSmallLoading] = useState(false);
   const [qtySelect, setQtySelect] = useState(1);
+  const [thumbsSwiper, setThumbsSwiper] = useState(null); // Swiper 物件
   const navigate = useNavigate();
 
   const getProducts = async () => {
@@ -23,6 +27,7 @@ export default function ProductInner() {
       alert("取得產品失敗", `${error}`);
     }
   };
+
   const addToCart = async (product_id, qty) => {
     setSmallLoading(true);
     try {
@@ -37,28 +42,9 @@ export default function ProductInner() {
       alert("加入購物車失敗", `${error}`);
     }
   };
+
   useEffect(() => {
     getProducts();
-  }, []);
-
-  useEffect(() => {
-    const swiperThumbs = new Swiper(".innerSwiper", {
-      spaceBetween: 10,
-      slidesPerView: 4,
-      freeMode: true,
-      watchSlidesProgress: true,
-    });
-
-    new Swiper(".innerSwiper2", {
-      spaceBetween: 10,
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-      thumbs: {
-        swiper: swiperThumbs,
-      },
-    });
   }, []);
 
   return (
@@ -87,36 +73,44 @@ export default function ProductInner() {
               <div className="row">
                 <div className="col-12 col-md-6 p-0">
                   <div className="inner-swiper">
-                    <div className="swiper innerSwiper2">
-                      <div className="swiper-wrapper">
-                        {product.imageUrl && (
-                          <div className="swiper-slide" key="main-image">
-                            <img src={product.imageUrl} alt="Main Image" />
-                          </div>
-                        )}
-
-                        {product.imagesUrl?.map((image, index) => (
-                          <div className="swiper-slide" key={`image-${index}`}>
-                            <img src={image} alt={`Thumbnail ${index}`} />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="swiper innerSwiper">
-                      <div className="swiper-wrapper">
-                        {product.imageUrl && (
-                          <div className="swiper-slide" key="main-image">
-                            <img src={product.imageUrl} alt="Main Image" />
-                          </div>
-                        )}
-
-                        {product.imagesUrl?.map((image, index) => (
-                          <div className="swiper-slide" key={`image-${index}`}>
-                            <img src={image} alt={`Thumbnail ${index}`} />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                    <Swiper
+                      spaceBetween={10}
+                      navigation={true}
+                      thumbs={{ swiper: thumbsSwiper }}
+                      modules={[Navigation, Thumbs]}
+                      className="innerSwiper2"
+                    >
+                      {product.imageUrl && (
+                        <SwiperSlide key="main-image">
+                          <img src={product.imageUrl} alt="Main Image" />
+                        </SwiperSlide>
+                      )}
+                      {product.imagesUrl?.map((image, index) => (
+                        <SwiperSlide key={`image-${index}`}>
+                          <img src={image} alt={`Thumbnail ${index}`} />
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                    <Swiper
+                      onSwiper={setThumbsSwiper}
+                      spaceBetween={10}
+                      slidesPerView={4}
+                      freeMode={true}
+                      watchSlidesProgress={true}
+                      modules={[FreeMode, Thumbs]}
+                      className="innerSwiper"
+                    >
+                      {product.imageUrl && (
+                        <SwiperSlide key="main-thumb">
+                          <img src={product.imageUrl} alt="Main Thumbnail" />
+                        </SwiperSlide>
+                      )}
+                      {product.imagesUrl?.map((image, index) => (
+                        <SwiperSlide key={`thumb-${index}`}>
+                          <img src={image} alt={`Thumbnail ${index}`} />
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
                   </div>
                 </div>
                 <div className="col-12 col-md-6 p-0">
@@ -151,6 +145,7 @@ export default function ProductInner() {
                     </button>
                   </div>
                 </div>
+
                 <div className="col-12 p-0">
                   <div className="product-inner-bottem">
                     <button
