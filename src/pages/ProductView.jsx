@@ -42,8 +42,6 @@ export default function ProductPage() {
 
   const filterProducts = () => {
     let tempProducts = [...products];
-
-    // 根據關鍵字搜尋 (在取得特定類別資料後再搜尋)
     if (searchTerm) {
       const lowerSearchTerm = searchTerm.toLowerCase();
       tempProducts = tempProducts.filter(
@@ -53,7 +51,6 @@ export default function ProductPage() {
       );
     }
 
-    // 根據價格排序 (在取得特定類別資料後再排序)
     if (sortOrder === "high") {
       tempProducts.sort((a, b) => b.price - a.price);
     } else if (sortOrder === "low") {
@@ -69,21 +66,13 @@ export default function ProductPage() {
   };
 
   useEffect(() => {
-    const apiCategory = currentCategory === "all" ? "" : currentCategory;
-    getProducts(1, apiCategory);
-  }, [currentCategory]);
-
-  useEffect(() => {
-    getProducts(1, currentCategory);
+    getProducts(1, currentCategory === "all" ? "" : currentCategory);
   }, [currentCategory]);
 
   useEffect(() => {
     filterProducts();
   }, [searchTerm, sortOrder, products]);
 
-  useEffect(() => {
-    getProducts();
-  }, []);
   return (
     <>
       <section className="pages-bread">
