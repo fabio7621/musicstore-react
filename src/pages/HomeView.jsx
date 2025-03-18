@@ -1,48 +1,32 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Swiper from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-
+import "swiper/css/autoplay";
+import { Autoplay, Pagination } from "swiper/modules";
 import axios from "axios";
 import { Link } from "react-router-dom";
+
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
 
 export default function HomeView() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
+  const indexSwiperRef = useRef(null);
+
   const getProducts = async () => {
     try {
       const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/products/all`);
-
       setProducts(res.data.products);
     } catch (error) {
-      alert("取得產品失敗", `${error}`);
+      alert("取得產品失敗: " + error);
     }
   };
 
   useEffect(() => {
     getProducts();
-  }, []);
-
-  useEffect(() => {
-    new Swiper(".indexSwiper", {
-      slidesPerView: 3,
-      spaceBetween: 30,
-      pagination: {
-        el: ".swiper-pagination",
-        clickable: true,
-      },
-      breakpoints: {
-        992: {
-          slidesPerView: 3,
-        },
-        0: {
-          slidesPerView: 1,
-        },
-      },
-    });
   }, []);
 
   return (
@@ -54,19 +38,30 @@ export default function HomeView() {
               全部專輯 <span>Albums</span>
             </h2>
           </div>
-          <div className="swiper indexSwiper">
-            <div className="swiper-wrapper">
-              {products.map((product) => (
-                <div key={product.id} className="swiper-slide">
-                  <Link to={`/product/${product.id}`}>
-                    <img src={product.imageUrl} alt={product.title} />
-                    <i className="bi bi-heart"></i>
-                  </Link>
-                </div>
-              ))}
-            </div>
-            <div className="swiper-pagination"></div>
-          </div>
+          {/* 直接使用 Swiper 組件 */}
+          <Swiper
+            ref={indexSwiperRef}
+            modules={[Autoplay, Pagination]}
+            slidesPerView={1}
+            spaceBetween={30}
+            loop={true}
+            pagination={{ clickable: true }}
+            autoplay={{ delay: 3000, disableOnInteraction: false }}
+            breakpoints={{
+              992: { slidesPerView: 3 },
+              0: { slidesPerView: 1 },
+            }}
+            className="indexSwiper"
+          >
+            {products.map((product) => (
+              <SwiperSlide key={product.id}>
+                <Link to={`/product/${product.id}`}>
+                  <img src={product.imageUrl} alt={product.title} />
+                  <i className="bi bi-heart"></i>
+                </Link>
+              </SwiperSlide>
+            ))}
+          </Swiper>
           <button
             onClick={() => navigate("/products")}
             className="indexbtn mx-auto"
@@ -75,6 +70,7 @@ export default function HomeView() {
           </button>
         </div>
       </section>
+
       <section className="index-product-banner">
         <div className="index-product-main">
           <h2>Click me to chat about the latest trends!</h2>

@@ -3,6 +3,23 @@
   height: 100%;
 }
 .indexSwiper {
+  .swiper-wrapper {
+    padding-bottom: 50px;
+  }
+  .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    margin: 0 8px;
+    border-radius: 10px;
+    transition: 0.3s;
+    background-color: #fff;
+    opacity: 0.5;
+    &.swiper-pagination-bullet-active {
+      width: 40px;
+      opacity: 1;
+    }
+  }
+
   .swiper-slide {
     aspect-ratio: 401/797;
     padding: 26px 30px;
@@ -139,7 +156,8 @@
   display: block;
   transition: 0.2s ease;
   &:hover {
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+      rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   }
 }
 
@@ -228,17 +246,20 @@
     height: 10px;
   }
   50% {
-    height: 30px;
+    height: 50px;
   }
   100% {
-    height: 50px;
+    height: 10px;
   }
 }
 @keyframes cha02 {
-  from {
+  0% {
     height: 10px;
   }
-  to {
+  50% {
     height: 40px;
+  }
+  100% {
+    height: 10px;
   }
 }
