@@ -5,21 +5,28 @@ import { Link } from "react-router-dom";
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
 
-const musicCategories = [
-  { name: "Taiwan", value: "taiwan" },
-  { name: "All", value: "all" },
-  { name: "Hip Hop", value: "hiphop" },
-  { name: "J-pop", value: "japan" },
-  { name: "K-pop", value: "korea" },
-];
-
 export default function ProductPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("high");
   const [pagination, setPagination] = useState({});
   const [products, setProducts] = useState([]);
+  const [productsAll, setProductsAll] = useState([]);
+
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [currentCategory, setCurrentCategory] = useState("all"); // 新增 state 來追蹤當前類別
+  const [currentCategory, setCurrentCategory] = useState("all");
+
+  const musicCategories = [
+    ...new Set(productsAll.map((item) => item.category)),
+  ];
+
+  const getProductsAll = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/products/all`);
+      setProductsAll(res.data.products);
+    } catch (error) {
+      alert("取得產品失敗", `${error}`);
+    }
+  };
 
   const getProducts = async (page = 1, category = "") => {
     try {
@@ -28,7 +35,7 @@ export default function ProductPage() {
       );
       setPagination(res.data.pagination);
       setProducts(res.data.products);
-      setFilteredProducts(res.data.products); // 取得新資料後更新 filteredProducts
+      setFilteredProducts(res.data.products);
     } catch (error) {
       alert("取得產品失敗", `${error}`);
     }
@@ -66,6 +73,9 @@ export default function ProductPage() {
   };
 
   useEffect(() => {
+    getProductsAll();
+  }, []);
+  useEffect(() => {
     getProducts(1, currentCategory === "all" ? "" : currentCategory);
   }, [currentCategory]);
 
@@ -96,15 +106,21 @@ export default function ProductPage() {
             </div>
             <div className="page-product-navbar d-flex align-items-center justify-center flex-column">
               <ul className="product-navbar-list">
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => filterProductsByCategory("all")}
+                  >
+                    All
+                  </button>
+                </li>
                 {musicCategories.map((categoryItem) => (
-                  <li key={categoryItem.value}>
+                  <li key={categoryItem}>
                     <button
                       type="button"
-                      onClick={() =>
-                        filterProductsByCategory(categoryItem.value)
-                      }
+                      onClick={() => filterProductsByCategory(categoryItem)}
                     >
-                      {categoryItem.name}
+                      {categoryItem}
                     </button>
                   </li>
                 ))}
