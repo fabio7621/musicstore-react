@@ -6,8 +6,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Thumbs, FreeMode } from "swiper/modules";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 
+import { useDispatch } from "react-redux";
+import { updateCartData } from "../../src/redux/cartSlice";
+
+import axios from "axios";
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
 
@@ -18,6 +21,15 @@ export default function ProductInner() {
   const [qtySelect, setQtySelect] = useState(1);
   const [thumbsSwiper, setThumbsSwiper] = useState(null); // Swiper 物件
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const getCart = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/cart`);
+      dispatch(updateCartData(res.data.data));
+    } catch (error) {
+      alert(`取得購物車失敗: ${error.message}`);
+    }
+  };
 
   const getProducts = async () => {
     try {
@@ -34,7 +46,7 @@ export default function ProductInner() {
       await axios.post(`${apiUrl}/v2/api/${apiPath}/cart`, {
         data: { product_id, qty: Number(qty) },
       });
-
+      getCart();
       setSmallLoading(false);
       setQtySelect(1);
       alert("加入購物車成功");
@@ -45,6 +57,7 @@ export default function ProductInner() {
 
   useEffect(() => {
     getProducts();
+    getCart();
   }, []);
 
   return (
@@ -73,13 +86,7 @@ export default function ProductInner() {
               <div className="row">
                 <div className="col-12 col-md-6 p-0">
                   <div className="inner-swiper">
-                    <Swiper
-                      spaceBetween={10}
-                      navigation={true}
-                      thumbs={{ swiper: thumbsSwiper }}
-                      modules={[Navigation, Thumbs]}
-                      className="innerSwiper2"
-                    >
+                    <Swiper spaceBetween={10} navigation={true} thumbs={{ swiper: thumbsSwiper }} modules={[Navigation, Thumbs]} className="innerSwiper2">
                       {product.imageUrl && (
                         <SwiperSlide key="main-image">
                           <img src={product.imageUrl} alt="Main Image" />
@@ -122,12 +129,7 @@ export default function ProductInner() {
 
                     <div className="inner-order">
                       <label htmlFor="innerOrder">訂購數量</label>
-                      <select
-                        value={qtySelect}
-                        onChange={(e) => setQtySelect(e.target.value)}
-                        id="qtySelect"
-                        className="form-select"
-                      >
+                      <select value={qtySelect} onChange={(e) => setQtySelect(e.target.value)} id="qtySelect" className="form-select">
                         {Array.from({ length: 10 }).map((_, index) => (
                           <option key={index} value={index + 1}>
                             {index + 1}
@@ -135,12 +137,7 @@ export default function ProductInner() {
                         ))}
                       </select>
                     </div>
-                    <button
-                      onClick={() => addToCart(product.id, qtySelect)}
-                      type="button"
-                      className="inner-btn"
-                      disabled={smallIsLoading}
-                    >
+                    <button onClick={() => addToCart(product.id, qtySelect)} type="button" className="inner-btn" disabled={smallIsLoading}>
                       確認購買
                     </button>
                   </div>
@@ -148,11 +145,7 @@ export default function ProductInner() {
 
                 <div className="col-12 p-0">
                   <div className="product-inner-bottem">
-                    <button
-                      onClick={() => navigate(-1)}
-                      className="back-btn mx-auto"
-                      type="button"
-                    >
+                    <button onClick={() => navigate(-1)} className="back-btn mx-auto" type="button">
                       Back!
                     </button>
                   </div>

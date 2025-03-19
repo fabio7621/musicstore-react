@@ -1,4 +1,12 @@
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
+import axios from "axios";
+import { updateCartData } from "../../redux/cartSlice";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+const apiUrl = import.meta.env.VITE_BASE_URL;
+const apiPath = import.meta.env.VITE_API_PATH;
+
 const routes = [
   { path: "/", name: "首頁" },
   { path: "/products", name: "產品列表" },
@@ -7,24 +15,31 @@ const routes = [
 ];
 
 export default function FrontHeader() {
+  const carts = useSelector((state) => state.cart.carts);
+  const dispatch = useDispatch();
+  const getCart = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/cart`);
+      dispatch(updateCartData(res.data.data));
+    } catch (error) {
+      alert(`取得購物車失敗: ${error.message}`);
+    }
+  };
+  useEffect(() => {
+    getCart();
+  }, []);
   return (
     <header className="main-header">
       <div className="section-header-top d-none d-md-block">
         <NavLink to={"/"} className="section-header-logo d-block">
-          <img
-            src="@/../../../../public/icon/seven07musicstore.svg"
-            alt="logo"
-          />
+          <img src="@/../../../../public/icon/seven07musicstore.svg" alt="logo" />
         </NavLink>
       </div>
       <div className="music-navbar-main">
         <nav className="navbar navbar-expand-lg bg-body-tertiary">
           <h1 className="sr-only">SEVEN07musicStore</h1>
           <NavLink to={"/"} className="section-header-logo d-block d-md-none">
-            <img
-              src="@/../../../../public/icon/seven07musicstore.svg"
-              alt="logo"
-            />
+            <img src="@/../../../../public/icon/seven07musicstore.svg" alt="logo" />
           </NavLink>
           <button
             className="navbar-toggler"
@@ -43,11 +58,7 @@ export default function FrontHeader() {
               <span>MENU</span>
             </div>
           </button>
-          <div
-            style={{ position: "relative", zIndex: 99 }}
-            className="collapse navbar-collapse"
-            id="navbarSupportedContent"
-          >
+          <div style={{ position: "relative", zIndex: 99 }} className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
               {routes.map((route) => (
                 <li key={route.path} className="nav-item">
@@ -62,13 +73,8 @@ export default function FrontHeader() {
                     <img src="@/../../../../public/icon/Heart.png" alt="like" />
                   </div>
                   <div className="top-nav-item position-relative">
-                    <img
-                      src="@/../../../../public/icon/Shopping Cart.png"
-                      alt="cart"
-                    />
-                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                      7
-                    </span>
+                    <img src="@/../../../../public/icon/Shopping Cart.png" alt="cart" />
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{carts?.length}</span>
                   </div>
                 </div>
               </li>
