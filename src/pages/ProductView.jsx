@@ -72,6 +72,22 @@ export default function ProductPage() {
     getProducts(page, apiCategory);
   };
 
+  const [wishList, setWishList] = useState(() => {
+    const initWishList = localStorage.getItem("wishList")
+      ? JSON.parse(localStorage.getItem("wishList"))
+      : {};
+    return initWishList;
+  });
+
+  const toggleWishListItem = (product_id) => {
+    const newWishList = {
+      ...wishList,
+      [product_id]: !wishList[product_id],
+    };
+    localStorage.setItem("wishList", JSON.stringify(newWishList));
+    setWishList(newWishList);
+  };
+
   useEffect(() => {
     getProductsAll();
   }, []);
@@ -160,8 +176,19 @@ export default function ProductPage() {
               >
                 <div className="product-item-pic">
                   <img src={item.imageUrl} alt="album" />
-                  <i className="bi bi-heart"></i>
-                  {/* <i className="bi bi-heart-fill"></i> */}
+                  <button
+                    onClick={(event) => {
+                      event.preventDefault();
+                      toggleWishListItem(item.id);
+                    }}
+                    type="button"
+                  >
+                    {wishList?.[item.id] ? (
+                      <i className="bi bi-heart-fill"></i>
+                    ) : (
+                      <i className="bi bi-heart"></i>
+                    )}
+                  </button>
                 </div>
                 <span>{item.title}</span>
                 <span>${item.price}</span>
@@ -169,24 +196,22 @@ export default function ProductPage() {
             ))}
           </div>
 
-          <nav className="w-100 col mx-auto">
-            <ul
-              className="mx-auto pagination mt-5"
-              style={{ width: "fit-content" }}
-            >
+          <nav className="pages-pagination">
+            <ul className="pagination mx-auto">
               <li
                 className={`page-item ${!pagination.has_pre && "disabled"}`}
                 onClick={() => pagesChange(pagination.current_page - 1)}
               >
-                <button className="page-link">上一頁</button>
+                <button className="page-link" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+                </button>
               </li>
-
               {Array.from({ length: pagination.total_pages }).map(
                 (_, index) => (
                   <li
                     key={index}
                     className={`page-item ${
-                      pagination.current_page === index + 1 && "active"
+                      pagination.current_page === index + 1 ? "active" : ""
                     }`}
                   >
                     <button
@@ -198,13 +223,12 @@ export default function ProductPage() {
                   </li>
                 )
               )}
-
-              <li className={`page-item ${!pagination.has_next && "disabled"}`}>
-                <button
-                  onClick={() => pagesChange(pagination.current_page + 1)}
-                  className="page-link"
-                >
-                  下一頁
+              <li
+                className={`page-item ${!pagination.has_next && "disabled"}`}
+                onClick={() => pagesChange(pagination.current_page + 1)}
+              >
+                <button className="page-link" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
                 </button>
               </li>
             </ul>

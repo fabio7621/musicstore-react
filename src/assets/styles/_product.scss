@@ -118,6 +118,17 @@
       padding: 1rem;
       position: relative;
       background-color: #ffffff52;
+      > button {
+        display: block;
+        position: absolute;
+        right: 50px;
+        top: 50px;
+        font-size: 30px;
+        color: #fff;
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+      }
       > i {
         position: absolute;
         right: 50px;

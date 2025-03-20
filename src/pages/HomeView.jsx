@@ -16,6 +16,22 @@ export default function HomeView() {
   const [products, setProducts] = useState([]);
   const indexSwiperRef = useRef(null);
 
+  const [wishList, setWishList] = useState(() => {
+    const initWishList = localStorage.getItem("wishList")
+      ? JSON.parse(localStorage.getItem("wishList"))
+      : {};
+    return initWishList;
+  });
+
+  const toggleWishListItem = (product_id) => {
+    const newWishList = {
+      ...wishList,
+      [product_id]: !wishList[product_id],
+    };
+    localStorage.setItem("wishList", JSON.stringify(newWishList));
+    setWishList(newWishList);
+  };
+
   const getProducts = async () => {
     try {
       const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/products/all`);
@@ -55,9 +71,25 @@ export default function HomeView() {
           >
             {products.map((product) => (
               <SwiperSlide key={product.id}>
-                <Link to={`/product/${product.id}`}>
+                <Link
+                  className="position-relative"
+                  to={`/product/${product.id}`}
+                >
                   <img src={product.imageUrl} alt={product.title} />
-                  <i className="bi bi-heart"></i>
+                  <button
+                    className="index-heart"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      toggleWishListItem(product.id);
+                    }}
+                    type="button"
+                  >
+                    {wishList?.[product.id] ? (
+                      <i className="bi bi-heart-fill"></i>
+                    ) : (
+                      <i className="bi bi-heart"></i>
+                    )}
+                  </button>
                 </Link>
               </SwiperSlide>
             ))}
