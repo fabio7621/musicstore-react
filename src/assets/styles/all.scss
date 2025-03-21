@@ -10,6 +10,7 @@
 @import "./productInner";
 @import "./cart";
 @import "./login";
+@import "./checkout";
 @import "./reset.css";
 
 * body {
@@ -35,11 +36,7 @@ body::after {
 }
 
 body::after {
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0.15) 70%
-  );
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0.15) 70%);
   mix-blend-mode: overlay;
 }
 

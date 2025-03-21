@@ -48,7 +48,7 @@ export default function ChartView() {
 
   const options = useMemo(
     () => ({
-      indexAxis: "y", // 這一行讓長條圖變成橫的
+      indexAxis: "y",
       responsive: true,
       plugins: {
         legend: {

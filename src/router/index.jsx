@@ -9,6 +9,7 @@ import NotfoundView from "../pages/NotfoundView.jsx";
 import AdminLayout from "../layout/AdminLayout.jsx";
 import AdminProducts from "../pages/admin/AdminProducts.jsx";
 import ProductInner from "../pages/ProductInner.jsx";
+import CheckOut from "../pages/CheckoutView.jsx";
 
 const router = createHashRouter([
   {
@@ -38,6 +39,10 @@ const router = createHashRouter([
       {
         path: "chart",
         element: <ChartView />,
+      },
+      {
+        path: "checkout",
+        element: <CheckOut />,
       },
     ],
   },

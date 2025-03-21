@@ -4,14 +4,17 @@ import ReactLoading from "react-loading";
 import axios from "axios";
 import { updateCartData, clearCartData } from "../redux/cartSlice";
 import { useDispatch } from "react-redux";
-
+import { useNavigate } from "react-router-dom";
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
 
 export default function CartPage() {
   const [cart, setCart] = useState([]);
-  const [isLoading, setLoading] = useState(false);
+  // const [isLoading, setLoading] = useState(false);
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   // 取得購物車
   const getCart = async () => {
     try {
@@ -25,34 +28,36 @@ export default function CartPage() {
 
   // 清空購物車
   const removeCart = async () => {
-    setLoading(true);
+    // setLoading(true);
     try {
       await axios.delete(`${apiUrl}/v2/api/${apiPath}/carts`);
       dispatch(clearCartData());
       getCart();
     } catch (error) {
       alert(`清除購物車失敗: ${error.message}`);
-    } finally {
-      setLoading(false);
     }
+    // finally {
+    //   setLoading(false);
+    // }
   };
 
   // 單項刪除
   const removeCartItem = async (id) => {
-    setLoading(true);
+    // setLoading(true);
     try {
       await axios.delete(`${apiUrl}/v2/api/${apiPath}/cart/${id}`);
       getCart();
     } catch (error) {
       alert(`刪除購物車單項失敗: ${error.message}`);
-    } finally {
-      setLoading(false);
     }
+    // finally {
+    //   setLoading(false);
+    // }
   };
 
   // 更新購物車
   const updateCart = async (cart_Id, product_id, qty) => {
-    setLoading(true);
+    // setLoading(true);
     try {
       await axios.put(`${apiUrl}/v2/api/${apiPath}/cart/${cart_Id}`, {
         data: { product_id, qty: Number(qty) },
@@ -60,23 +65,26 @@ export default function CartPage() {
       getCart();
     } catch (error) {
       alert(`更新購物車失敗: ${error.message}`);
-    } finally {
-      setLoading(false);
     }
+    // finally {
+    //   setLoading(false);
+    // }
   };
 
   // 結帳
   const checkout = async (data) => {
-    setLoading(true);
+    // setLoading(true);
     try {
       await axios.post(`${apiUrl}/v2/api/${apiPath}/order`, data);
       reset();
       getCart();
+      navigate("/checkout");
     } catch (error) {
       alert(`訂單失敗: ${error.message}`);
-    } finally {
-      setLoading(false);
     }
+    // finally {
+    //   setLoading(false);
+    // }
   };
 
   const {
@@ -98,7 +106,6 @@ export default function CartPage() {
 
   return (
     <div>
-      {/* 麵包屑導航 */}
       <section className="pages-bread">
         <div className="pages-bread-main d-flex align-items-center justify-between">
           <ul className="pages-bread-nav">
@@ -111,8 +118,6 @@ export default function CartPage() {
           </ul>
         </div>
       </section>
-
-      {/* 購物車內容 */}
       <section className="page-product">
         <div className="page-product-main">
           <div className="page-title-box">
@@ -120,7 +125,6 @@ export default function CartPage() {
               <h1>Shop Cart</h1>
             </div>
           </div>
-
           <table className="shopcart-list">
             <thead>
               <tr>
@@ -142,19 +146,6 @@ export default function CartPage() {
                     </div>
                   </td>
                   <td>
-                    {/* <input
-                      className=""
-                      type="text"
-                      name="quantity1"
-                      defaultValue={cartItem.qty}
-                      onChange={(e) =>
-                        updateCart(
-                          cartItem.id,
-                          cartItem.product_id,
-                          e.target.value
-                        )
-                      }
-                    /> */}
                     <div className="btn-group me-2" role="group">
                       <button
                         onClick={() => updateCart(cartItem.id, cartItem.product_id, cartItem.qty - 1)}
@@ -191,8 +182,6 @@ export default function CartPage() {
               清空購物車
             </button>
           </div>
-
-          {/* 訂單表單 */}
           <form onSubmit={onSubmit} className="page-shop-form">
             <div className="shop-form-item">
               <label htmlFor="email">Email</label>
