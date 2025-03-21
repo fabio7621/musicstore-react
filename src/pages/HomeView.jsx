@@ -17,9 +17,7 @@ export default function HomeView() {
   const indexSwiperRef = useRef(null);
 
   const [wishList, setWishList] = useState(() => {
-    const initWishList = localStorage.getItem("wishList")
-      ? JSON.parse(localStorage.getItem("wishList"))
-      : {};
+    const initWishList = localStorage.getItem("wishList") ? JSON.parse(localStorage.getItem("wishList")) : {};
     return initWishList;
   });
 
@@ -54,7 +52,6 @@ export default function HomeView() {
               全部專輯 <span>Albums</span>
             </h2>
           </div>
-          {/* 直接使用 Swiper 組件 */}
           <Swiper
             ref={indexSwiperRef}
             modules={[Autoplay, Pagination]}
@@ -71,10 +68,7 @@ export default function HomeView() {
           >
             {products.map((product) => (
               <SwiperSlide key={product.id}>
-                <Link
-                  className="position-relative"
-                  to={`/product/${product.id}`}
-                >
+                <Link className="position-relative" to={`/products/${product.id}`}>
                   <img src={product.imageUrl} alt={product.title} />
                   <button
                     className="index-heart"
@@ -84,20 +78,13 @@ export default function HomeView() {
                     }}
                     type="button"
                   >
-                    {wishList?.[product.id] ? (
-                      <i className="bi bi-heart-fill"></i>
-                    ) : (
-                      <i className="bi bi-heart"></i>
-                    )}
+                    {wishList?.[product.id] ? <i className="bi bi-heart-fill"></i> : <i className="bi bi-heart"></i>}
                   </button>
                 </Link>
               </SwiperSlide>
             ))}
           </Swiper>
-          <button
-            onClick={() => navigate("/products")}
-            className="indexbtn mx-auto"
-          >
+          <button onClick={() => navigate("/products")} className="indexbtn mx-auto">
             Watch more!!
           </button>
         </div>
@@ -107,10 +94,7 @@ export default function HomeView() {
         <div className="index-product-main">
           <h2>Click me to chat about the latest trends!</h2>
           <div className="index-product-pic">
-            <img
-              src="@/../../../public/music/background.png"
-              alt="product-banner"
-            />
+            <img src="@/../../../public/music/background.png" alt="product-banner" />
             <div className="index-product-content">
               <Link to="/products">Click me! Find your music</Link>
             </div>

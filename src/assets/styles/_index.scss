@@ -136,7 +136,11 @@
     margin: 20px 0 0 4em;
   }
   .top-nav-item {
+    border: none;
+    background-color: transparent;
+    display: block;
     width: 26px;
+    padding: 0;
     img {
       width: 100%;
     }

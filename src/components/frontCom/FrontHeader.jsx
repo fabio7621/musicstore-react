@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
 import { updateCartData } from "../../redux/cartSlice";
@@ -15,6 +16,7 @@ const routes = [
 ];
 
 export default function FrontHeader() {
+  const navigate = useNavigate();
   const carts = useSelector((state) => state.cart.carts);
   const dispatch = useDispatch();
   const getCart = async () => {
@@ -69,13 +71,10 @@ export default function FrontHeader() {
               ))}
               <li className="nav-item">
                 <div className="top-nav-box d-flex align-items-center">
-                  <div className="top-nav-item">
-                    <img src="@/../../../../public/icon/Heart.png" alt="like" />
-                  </div>
-                  <div className="top-nav-item position-relative">
+                  <button type="button" onClick={() => navigate("/cart")} className="top-nav-item position-relative">
                     <img src="@/../../../../public/icon/Shopping Cart.png" alt="cart" />
                     <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{carts?.length}</span>
-                  </div>
+                  </button>
                 </div>
               </li>
             </ul>

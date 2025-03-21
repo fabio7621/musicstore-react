@@ -10,7 +10,7 @@ const apiPath = import.meta.env.VITE_API_PATH;
 
 export default function CartPage() {
   const [cart, setCart] = useState([]);
-  // const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -28,36 +28,34 @@ export default function CartPage() {
 
   // 清空購物車
   const removeCart = async () => {
-    // setLoading(true);
+    setLoading(true);
     try {
       await axios.delete(`${apiUrl}/v2/api/${apiPath}/carts`);
       dispatch(clearCartData());
       getCart();
     } catch (error) {
       alert(`清除購物車失敗: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
-    // finally {
-    //   setLoading(false);
-    // }
   };
 
   // 單項刪除
   const removeCartItem = async (id) => {
-    // setLoading(true);
+    setLoading(true);
     try {
       await axios.delete(`${apiUrl}/v2/api/${apiPath}/cart/${id}`);
       getCart();
     } catch (error) {
       alert(`刪除購物車單項失敗: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
-    // finally {
-    //   setLoading(false);
-    // }
   };
 
   // 更新購物車
   const updateCart = async (cart_Id, product_id, qty) => {
-    // setLoading(true);
+    setLoading(true);
     try {
       await axios.put(`${apiUrl}/v2/api/${apiPath}/cart/${cart_Id}`, {
         data: { product_id, qty: Number(qty) },
@@ -65,15 +63,14 @@ export default function CartPage() {
       getCart();
     } catch (error) {
       alert(`更新購物車失敗: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
-    // finally {
-    //   setLoading(false);
-    // }
   };
 
   // 結帳
   const checkout = async (data) => {
-    // setLoading(true);
+    setLoading(true);
     try {
       await axios.post(`${apiUrl}/v2/api/${apiPath}/order`, data);
       reset();
@@ -81,10 +78,9 @@ export default function CartPage() {
       navigate("/checkout");
     } catch (error) {
       alert(`訂單失敗: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
-    // finally {
-    //   setLoading(false);
-    // }
   };
 
   const {
@@ -106,6 +102,19 @@ export default function CartPage() {
 
   return (
     <div>
+      {isLoading && (
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(255,255,255,0.3)",
+            zIndex: 999,
+          }}
+        >
+          <ReactLoading type="spin" color="black" width="4rem" height="4rem" />
+        </div>
+      )}
       <section className="pages-bread">
         <div className="pages-bread-main d-flex align-items-center justify-between">
           <ul className="pages-bread-nav">
@@ -196,13 +205,20 @@ export default function CartPage() {
                 className={errors.email ? "is-invalid" : ""}
                 type="email"
                 name="email"
+                placeholder="請輸入Email"
               />
               {errors.email && <p className="text-danger my-2">{errors.email?.message}</p>}
             </div>
 
             <div className="shop-form-item">
               <label htmlFor="name">收件人</label>
-              <input {...register("name", { required: "請輸入姓名" })} type="text" name="name" className={errors.name ? "is-invalid" : ""} />
+              <input
+                {...register("name", { required: "請輸入姓名" })}
+                type="text"
+                name="name"
+                className={errors.name ? "is-invalid" : ""}
+                placeholder="請輸入收件人姓名"
+              />
               {errors.name && <p className="text-danger my-2">{errors.name?.message}</p>}
             </div>
 
