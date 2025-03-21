@@ -36,7 +36,11 @@ body::after {
 }
 
 body::after {
-  background: radial-gradient(circle, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0.15) 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0.15) 70%
+  );
   mix-blend-mode: overlay;
 }
 
@@ -189,5 +193,8 @@ body::after {
     height: 2px;
     background-color: #fff;
     margin-top: 6px;
+    @media (max-width: 476px) {
+      display: none;
+    }
   }
 }

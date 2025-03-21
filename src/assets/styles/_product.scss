@@ -34,6 +34,7 @@
     width: fit-content;
     margin: auto;
     display: flex;
+    flex-wrap: wrap;
     li {
       display: flex;
       align-items: center;
@@ -78,9 +79,16 @@
     text-indent: 1em;
     border-radius: 13px;
     color: #fff;
+    @media (max-width: 992px) {
+      width: 200px;
+      font-size: 16px;
+    }
     &::placeholder {
       font-size: 20px;
       color: #fff;
+      @media (max-width: 992px) {
+        font-size: 13px;
+      }
     }
     &:focus-visible {
       outline: none;

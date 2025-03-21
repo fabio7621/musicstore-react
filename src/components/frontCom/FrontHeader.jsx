@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
-
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 const routes = [
   { path: "/", name: "首頁" },
   { path: "/products", name: "產品列表" },
@@ -44,13 +44,13 @@ export default function FrontHeader() {
             <img src="./icon/seven07musicstore.svg" alt="logo" />
           </NavLink>
           <button
-            className="navbar-toggler"
-            type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent"
             aria-expanded="false"
             aria-label="Toggle navigation"
+            className="navbar-toggler"
+            type="button"
           >
             <div className="hb-btn-container">
               <input id="menu-toggle" type="checkbox" />
@@ -60,7 +60,11 @@ export default function FrontHeader() {
               <span>MENU</span>
             </div>
           </button>
-          <div style={{ position: "relative", zIndex: 99 }} className="collapse navbar-collapse" id="navbarSupportedContent">
+          <div
+            style={{ position: "relative", zIndex: 99 }}
+            className="collapse navbar-collapse"
+            id="navbarSupportedContent"
+          >
             <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
               {routes.map((route) => (
                 <li key={route.path} className="nav-item">
@@ -71,9 +75,15 @@ export default function FrontHeader() {
               ))}
               <li className="nav-item">
                 <div className="top-nav-box d-flex align-items-center">
-                  <button type="button" onClick={() => navigate("/cart")} className="top-nav-item position-relative">
+                  <button
+                    type="button"
+                    onClick={() => navigate("/cart")}
+                    className="top-nav-item position-relative"
+                  >
                     <img src="./icon/Shopping Cart.png" alt="cart" />
-                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{carts?.length}</span>
+                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                      {carts?.length}
+                    </span>
                   </button>
                 </div>
               </li>

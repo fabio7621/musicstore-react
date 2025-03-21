@@ -147,7 +147,7 @@ export default function CartPage() {
               {cart.carts?.map((cartItem) => (
                 <tr key={cartItem.id}>
                   <td>
-                    <div className="shopcart-title d-flex align-items-center">
+                    <div className="shopcart-title d-flex flex-wrap flex-column align-items-center">
                       <div className="shopcart-pic">
                         <img src={cartItem.product.imageUrl} alt="album" />
                       </div>
@@ -157,18 +157,33 @@ export default function CartPage() {
                   <td>
                     <div className="btn-group me-2" role="group">
                       <button
-                        onClick={() => updateCart(cartItem.id, cartItem.product_id, cartItem.qty - 1)}
+                        onClick={() =>
+                          updateCart(
+                            cartItem.id,
+                            cartItem.product_id,
+                            cartItem.qty - 1
+                          )
+                        }
                         type="button"
                         className="btn btn-outline-dark btn-sm"
                         disabled={cartItem.qty === 1}
                       >
                         -
                       </button>
-                      <span className="btn border border-dark" style={{ width: "50px", cursor: "auto" }}>
+                      <span
+                        className="btn border border-dark"
+                        style={{ width: "50px", cursor: "auto" }}
+                      >
                         {cartItem.qty}
                       </span>
                       <button
-                        onClick={() => updateCart(cartItem.id, cartItem.product_id, cartItem.qty + 1)}
+                        onClick={() =>
+                          updateCart(
+                            cartItem.id,
+                            cartItem.product_id,
+                            cartItem.qty + 1
+                          )
+                        }
                         type="button"
                         className="btn btn-outline-dark btn-sm"
                       >
@@ -178,7 +193,10 @@ export default function CartPage() {
                   </td>
                   <td>{cartItem.product.price}</td>
                   <td>
-                    <div onClick={() => removeCartItem(cartItem.id)} className="shopcart-del-pic">
+                    <div
+                      onClick={() => removeCartItem(cartItem.id)}
+                      className="shopcart-del-pic"
+                    >
                       <img src="./icon/Close.png" alt="delete" />
                     </div>
                   </td>
@@ -187,7 +205,11 @@ export default function CartPage() {
             </tbody>
           </table>
           <div className="page-middle-box w-100 d-flex justify-content-center">
-            <button onClick={() => removeCart()} className="page-shop-btn mx-auto" type="button">
+            <button
+              onClick={() => removeCart()}
+              className="page-shop-btn mx-auto"
+              type="button"
+            >
               清空購物車
             </button>
           </div>
@@ -207,7 +229,9 @@ export default function CartPage() {
                 name="email"
                 placeholder="請輸入Email"
               />
-              {errors.email && <p className="text-danger my-2">{errors.email?.message}</p>}
+              {errors.email && (
+                <p className="text-danger my-2">{errors.email?.message}</p>
+              )}
             </div>
 
             <div className="shop-form-item">
@@ -219,7 +243,9 @@ export default function CartPage() {
                 className={errors.name ? "is-invalid" : ""}
                 placeholder="請輸入收件人姓名"
               />
-              {errors.name && <p className="text-danger my-2">{errors.name?.message}</p>}
+              {errors.name && (
+                <p className="text-danger my-2">{errors.name?.message}</p>
+              )}
             </div>
 
             <div className="shop-form-item">
@@ -237,18 +263,31 @@ export default function CartPage() {
                 className={errors.tel ? "is-invalid" : ""}
                 placeholder="請輸入電話"
               />
-              {errors.tel && <p className="text-danger my-2">{errors.tel?.message}</p>}
+              {errors.tel && (
+                <p className="text-danger my-2">{errors.tel?.message}</p>
+              )}
             </div>
 
             <div className="shop-form-item">
               <label htmlFor="address">地址</label>
-              <input {...register("address", { required: "請輸入地址" })} id="address" type="text" placeholder="請輸入地址" />
-              {errors.address && <p className="text-danger my-2">{errors.address?.message}</p>}
+              <input
+                {...register("address", { required: "請輸入地址" })}
+                id="address"
+                type="text"
+                placeholder="請輸入地址"
+              />
+              {errors.address && (
+                <p className="text-danger my-2">{errors.address?.message}</p>
+              )}
             </div>
 
             <div className="shop-form-item">
               <label htmlFor="message">留言</label>
-              <textarea {...register("message")} id="message" name="message"></textarea>
+              <textarea
+                {...register("message")}
+                id="message"
+                name="message"
+              ></textarea>
             </div>
 
             <button className="page-shop-btn mx-auto" type="submit">
