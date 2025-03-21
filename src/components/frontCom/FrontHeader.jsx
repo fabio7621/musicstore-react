@@ -1,13 +1,13 @@
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { NavLink } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Navbar, Nav, Container } from "react-bootstrap";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { updateCartData } from "../../redux/cartSlice";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
+
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 const routes = [
   { path: "/", name: "首頁" },
   { path: "/products", name: "產品列表" },
@@ -19,6 +19,7 @@ export default function FrontHeader() {
   const navigate = useNavigate();
   const carts = useSelector((state) => state.cart.carts);
   const dispatch = useDispatch();
+
   const getCart = async () => {
     try {
       const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/cart`);
@@ -27,48 +28,34 @@ export default function FrontHeader() {
       alert(`取得購物車失敗: ${error.message}`);
     }
   };
+
   useEffect(() => {
     getCart();
   }, []);
+
   return (
     <header className="main-header">
       <div className="section-header-top d-none d-md-block">
-        <NavLink to={"/"} className="section-header-logo d-block">
+        <NavLink to="/" className="section-header-logo d-block">
           <img src="./icon/seven07musicstore.svg" alt="logo" />
         </NavLink>
       </div>
       <div className="music-navbar-main">
-        <nav className="navbar navbar-expand-lg bg-body-tertiary">
-          <h1 className="sr-only">SEVEN07musicStore</h1>
-          <NavLink to={"/"} className="section-header-logo d-block d-md-none">
+        <Navbar bg="light" expand="lg">
+          <NavLink to="/" className="section-header-logo d-md-none d-block">
             <img src="./icon/seven07musicstore.svg" alt="logo" />
           </NavLink>
-          <button
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-            className="navbar-toggler"
-            type="button"
-          >
-            <div className="hb-btn-container">
-              <input id="menu-toggle" type="checkbox" />
-              <label className="menu-button-container" htmlFor="menu-toggle">
-                <div className="menu-button"></div>
-              </label>
-              <span>MENU</span>
-            </div>
-          </button>
-          <div
-            style={{ position: "relative", zIndex: 99 }}
-            className="collapse navbar-collapse"
-            id="navbarSupportedContent"
-          >
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
             <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
               {routes.map((route) => (
                 <li key={route.path} className="nav-item">
-                  <NavLink className="nav-link" to={route.path}>
+                  <NavLink
+                    to={route.path}
+                    className={({ isActive }) =>
+                      `nav-link ${isActive ? "active" : ""}`
+                    }
+                  >
                     {route.name}
                   </NavLink>
                 </li>
@@ -88,8 +75,8 @@ export default function FrontHeader() {
                 </div>
               </li>
             </ul>
-          </div>
-        </nav>
+          </Navbar.Collapse>
+        </Navbar>
       </div>
     </header>
   );
