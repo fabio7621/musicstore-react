@@ -4,7 +4,7 @@ export default function PagesChart() {
   return (
     <>
       <Link to="/chart" className="pages-chart-btn d-none d-md-none d-lg-block">
-        <img src="/icon/chart.png" alt="music" />
+        <img src="./icon/chart.png" alt="music" />
         <div className="chart-btn-box d-flex align-items-center justify-content-center">
           <div className="chart-btn-item long"></div>
           <div className="chart-btn-item short"></div>

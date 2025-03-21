@@ -179,7 +179,7 @@ export default function CartPage() {
                   <td>{cartItem.product.price}</td>
                   <td>
                     <div onClick={() => removeCartItem(cartItem.id)} className="shopcart-del-pic">
-                      <img src="/icon/Close.png" alt="delete" />
+                      <img src="./icon/Close.png" alt="delete" />
                     </div>
                   </td>
                 </tr>
