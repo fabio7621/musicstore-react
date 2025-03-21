@@ -34,14 +34,14 @@ export default function FrontHeader() {
     <header className="main-header">
       <div className="section-header-top d-none d-md-block">
         <NavLink to={"/"} className="section-header-logo d-block">
-          <img src="@/../../../../public/icon/seven07musicstore.svg" alt="logo" />
+          <img src="../../../public/icon/seven07musicstore.svg" alt="logo" />
         </NavLink>
       </div>
       <div className="music-navbar-main">
         <nav className="navbar navbar-expand-lg bg-body-tertiary">
           <h1 className="sr-only">SEVEN07musicStore</h1>
           <NavLink to={"/"} className="section-header-logo d-block d-md-none">
-            <img src="@/../../../../public/icon/seven07musicstore.svg" alt="logo" />
+            <img src="../../../public/icon/seven07musicstore.svg" alt="logo" />
           </NavLink>
           <button
             className="navbar-toggler"
@@ -72,7 +72,7 @@ export default function FrontHeader() {
               <li className="nav-item">
                 <div className="top-nav-box d-flex align-items-center">
                   <button type="button" onClick={() => navigate("/cart")} className="top-nav-item position-relative">
-                    <img src="@/../../../../public/icon/Shopping Cart.png" alt="cart" />
+                    <img src="../../../public/icon/Shopping Cart.png" alt="cart" />
                     <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{carts?.length}</span>
                   </button>
                 </div>
