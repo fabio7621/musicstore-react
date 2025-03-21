@@ -1,26 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { Bar, Pie } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-} from "chart.js";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from "chart.js";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
@@ -65,6 +48,7 @@ export default function ChartView() {
 
   const options = useMemo(
     () => ({
+      indexAxis: "y", // 這一行讓長條圖變成橫的
       responsive: true,
       plugins: {
         legend: {
@@ -155,7 +139,7 @@ export default function ChartView() {
           <div className="page-chart-content">
             <div className="container-fluid">
               <div className="row pt-md-5 pt-1">
-                <div className="col-12 col-md-3">
+                <div className="col-12 col-md-6 col-lg-3">
                   <div className="chart-top10-box d-flex flex-column">
                     <h2>TOP 10</h2>
                     {topSales.map((item, index) => (
@@ -176,23 +160,15 @@ export default function ChartView() {
                     ))}
                   </div>
                 </div>
-                <div className="col-12 col-md-9">
+                <div className="col-12 col-md-6 col-lg-9">
                   <div className="page-chart-main">
                     <div className="page-chart-item">
                       <h3>All sales rank</h3>
-                      <Bar
-                        className="page-chart-target"
-                        data={data}
-                        options={options}
-                      />
+                      <Bar className="page-chart-target" data={data} options={options} />
                     </div>
                     <div className="page-chart-item">
                       <h3>All style rank</h3>
-                      <Pie
-                        className="page-chart-target pie"
-                        data={pieChartData}
-                        options={pieOptions}
-                      />
+                      <Pie className="page-chart-target pie" data={pieChartData} options={pieOptions} />
                     </div>
                   </div>
                 </div>
