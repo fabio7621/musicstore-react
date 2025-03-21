@@ -147,7 +147,7 @@ export default function CartPage() {
               {cart.carts?.map((cartItem) => (
                 <tr key={cartItem.id}>
                   <td>
-                    <div className="shopcart-title d-flex flex-wrap flex-column align-items-center">
+                    <div className="shopcart-title d-flex flex-wrap  align-items-center">
                       <div className="shopcart-pic">
                         <img src={cartItem.product.imageUrl} alt="album" />
                       </div>

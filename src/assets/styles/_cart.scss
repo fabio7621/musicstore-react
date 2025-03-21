@@ -20,10 +20,11 @@
         &:nth-child(1) {
           width: 70%;
           text-align: start;
-          display: flex;
           flex-wrap: wrap;
           @media (max-width: 992px) {
             width: 50%;
+            display: flex;
+            flex-direction: column;
           }
         }
         &:nth-child(2) {

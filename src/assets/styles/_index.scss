@@ -33,7 +33,7 @@
       right: 40px;
     }
     @media (max-width: 992px) {
-      padding: 1rem;
+      padding: 13px;
       // aspect-ratio: 1/1;
     }
   }
@@ -159,7 +159,8 @@
   display: block;
   transition: 0.2s ease;
   &:hover {
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+      rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   }
 }
 
