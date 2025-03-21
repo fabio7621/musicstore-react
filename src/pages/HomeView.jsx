@@ -94,7 +94,7 @@ export default function HomeView() {
         <div className="index-product-main">
           <h2>Click me to chat about the latest trends!</h2>
           <div className="index-product-pic">
-            <img src="../../public/music/background.png" alt="product-banner" />
+            <img src="/public/music/background.png" alt="product-banner" />
             <div className="index-product-content">
               <Link to="/products">Click me! Find your music</Link>
             </div>
