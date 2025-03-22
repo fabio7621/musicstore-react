@@ -1,22 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import ReactLoading from "react-loading";
 import axios from "axios";
 import { updateCartData, clearCartData } from "../redux/cartSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
 
 export default function CartPage() {
   const [cart, setCart] = useState([]);
   const [isLoading, setLoading] = useState(false);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // 取得購物車
-  const getCart = async () => {
+  const getCart = useCallback(async () => {
     try {
       const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/cart`);
       setCart(res.data.data);
@@ -24,9 +23,12 @@ export default function CartPage() {
     } catch (error) {
       alert(`取得購物車失敗: ${error.message}`);
     }
-  };
+  }, [dispatch]);
 
-  // 清空購物車
+  useEffect(() => {
+    getCart();
+  }, [getCart]);
+
   const removeCart = async () => {
     setLoading(true);
     try {
@@ -40,7 +42,6 @@ export default function CartPage() {
     }
   };
 
-  // 單項刪除
   const removeCartItem = async (id) => {
     setLoading(true);
     try {
@@ -53,7 +54,6 @@ export default function CartPage() {
     }
   };
 
-  // 更新購物車
   const updateCart = async (cart_Id, product_id, qty) => {
     setLoading(true);
     try {
@@ -68,7 +68,6 @@ export default function CartPage() {
     }
   };
 
-  // 結帳
   const checkout = async (data) => {
     setLoading(true);
     try {
@@ -95,10 +94,6 @@ export default function CartPage() {
     const userData = { data: { user, message } };
     checkout(userData);
   });
-
-  useEffect(() => {
-    getCart();
-  }, []);
 
   return (
     <div>
@@ -147,7 +142,7 @@ export default function CartPage() {
               {cart.carts?.map((cartItem) => (
                 <tr key={cartItem.id}>
                   <td>
-                    <div className="shopcart-title d-flex flex-wrap  align-items-center">
+                    <div className="shopcart-title d-flex flex-wrap align-items-center">
                       <div className="shopcart-pic">
                         <img src={cartItem.product.imageUrl} alt="album" />
                       </div>
@@ -217,79 +212,14 @@ export default function CartPage() {
             <div className="shop-form-item">
               <label htmlFor="email">Email</label>
               <input
-                {...register("email", {
-                  required: "email必填",
-                  pattern: {
-                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                    message: "格式錯誤",
-                  },
-                })}
-                className={errors.email ? "is-invalid" : ""}
+                {...register("email", { required: "email必填" })}
                 type="email"
-                name="email"
                 placeholder="請輸入Email"
               />
               {errors.email && (
-                <p className="text-danger my-2">{errors.email?.message}</p>
+                <p className="text-danger my-2">{errors.email.message}</p>
               )}
             </div>
-
-            <div className="shop-form-item">
-              <label htmlFor="name">收件人</label>
-              <input
-                {...register("name", { required: "請輸入姓名" })}
-                type="text"
-                name="name"
-                className={errors.name ? "is-invalid" : ""}
-                placeholder="請輸入收件人姓名"
-              />
-              {errors.name && (
-                <p className="text-danger my-2">{errors.name?.message}</p>
-              )}
-            </div>
-
-            <div className="shop-form-item">
-              <label htmlFor="tel">電話</label>
-              <input
-                {...register("tel", {
-                  required: "電話必填",
-                  pattern: {
-                    value: /^(0[2-8]\d{7}|09\d{8})$/,
-                    message: "格式錯誤，請輸入正確的電話號碼",
-                  },
-                })}
-                id="tel"
-                type="tel"
-                className={errors.tel ? "is-invalid" : ""}
-                placeholder="請輸入電話"
-              />
-              {errors.tel && (
-                <p className="text-danger my-2">{errors.tel?.message}</p>
-              )}
-            </div>
-
-            <div className="shop-form-item">
-              <label htmlFor="address">地址</label>
-              <input
-                {...register("address", { required: "請輸入地址" })}
-                id="address"
-                type="text"
-                placeholder="請輸入地址"
-              />
-              {errors.address && (
-                <p className="text-danger my-2">{errors.address?.message}</p>
-              )}
-            </div>
-
-            <div className="shop-form-item">
-              <label htmlFor="message">留言</label>
-              <textarea
-                {...register("message")}
-                id="message"
-                name="message"
-              ></textarea>
-            </div>
-
             <button className="page-shop-btn mx-auto" type="submit">
               送出訂單
             </button>

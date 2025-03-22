@@ -1,29 +1,35 @@
-import { useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useRef, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Toast as BsToast } from "bootstrap/dist/js/bootstrap.esm";
-import { useDispatch } from "react-redux";
 import { removeMessage } from "../redux/toastSlice";
 
 export default function ToastMessage() {
   const messages = useSelector((state) => state.toast.messages);
   const toastRef = useRef({});
   const dispatch = useDispatch();
+
+  const removeMessageCallback = useCallback(
+    (id) => {
+      dispatch(removeMessage(id));
+    },
+    [dispatch]
+  );
+
   useEffect(() => {
     messages.forEach((message) => {
       const toastElement = toastRef.current[message.id];
       if (toastElement) {
         const toastInstance = new BsToast(toastElement);
         toastInstance.show();
-        setTimeout(() => {
-          dispatch(removeMessage(message.id));
+
+        const timer = setTimeout(() => {
+          removeMessageCallback(message.id);
         }, 2000);
+
+        return () => clearTimeout(timer);
       }
     });
-  }, [messages]);
-
-  const handleClose = (messagesId) => {
-    dispatch(removeMessage(messagesId));
-  };
+  }, [messages, removeMessageCallback]);
 
   return (
     <div className="position-fixed top-0 end-0 p-3" style={{ zIndex: 1000 }}>
@@ -31,7 +37,7 @@ export default function ToastMessage() {
         <div
           key={message.id}
           ref={(el) => (toastRef.current[message.id] = el)}
-          className="toast "
+          className="toast"
           role="alert"
           aria-live="assertive"
           aria-atomic="true"
@@ -45,7 +51,7 @@ export default function ToastMessage() {
               {message.status === "success" ? "成功" : "失敗"}
             </strong>
             <button
-              onClick={() => handleClose(message.id)}
+              onClick={() => removeMessageCallback(message.id)}
               type="button"
               className="btn-close"
             ></button>

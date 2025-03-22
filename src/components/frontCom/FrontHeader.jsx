@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Navbar, Nav, Container } from "react-bootstrap";
+import React, { useEffect, useCallback } from "react";
+import { Navbar, Nav } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
@@ -20,18 +20,18 @@ export default function FrontHeader() {
   const carts = useSelector((state) => state.cart.carts);
   const dispatch = useDispatch();
 
-  const getCart = async () => {
+  const getCart = useCallback(async () => {
     try {
       const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/cart`);
       dispatch(updateCartData(res.data.data));
     } catch (error) {
       alert(`取得購物車失敗: ${error.message}`);
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     getCart();
-  }, []);
+  }, [getCart]);
 
   return (
     <header className="main-header">

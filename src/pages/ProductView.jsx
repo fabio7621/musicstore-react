@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
@@ -11,7 +11,6 @@ export default function ProductPage() {
   const [pagination, setPagination] = useState({});
   const [products, setProducts] = useState([]);
   const [productsAll, setProductsAll] = useState([]);
-
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [currentCategory, setCurrentCategory] = useState("all");
 
@@ -42,13 +41,15 @@ export default function ProductPage() {
   };
 
   const filterProductsByCategory = (category) => {
-    const apiCategory = category === "all" ? "" : category;
-    setCurrentCategory(category);
-    getProducts(1, apiCategory);
+    if (category !== currentCategory) {
+      setCurrentCategory(category);
+      getProducts(1, category === "all" ? "" : category);
+    }
   };
 
-  const filterProducts = () => {
+  const filterProducts = useCallback(() => {
     let tempProducts = [...products];
+
     if (searchTerm) {
       const lowerSearchTerm = searchTerm.toLowerCase();
       tempProducts = tempProducts.filter(
@@ -58,32 +59,23 @@ export default function ProductPage() {
       );
     }
 
-    if (sortOrder === "high") {
-      tempProducts.sort((a, b) => b.price - a.price);
-    } else if (sortOrder === "low") {
-      tempProducts.sort((a, b) => a.price - b.price);
-    }
+    tempProducts.sort((a, b) =>
+      sortOrder === "high" ? b.price - a.price : a.price - b.price
+    );
 
     setFilteredProducts(tempProducts);
-  };
+  }, [products, searchTerm, sortOrder]);
 
   const pagesChange = (page) => {
-    const apiCategory = currentCategory === "all" ? "" : currentCategory;
-    getProducts(page, apiCategory);
+    getProducts(page, currentCategory === "all" ? "" : currentCategory);
   };
 
   const [wishList, setWishList] = useState(() => {
-    const initWishList = localStorage.getItem("wishList")
-      ? JSON.parse(localStorage.getItem("wishList"))
-      : {};
-    return initWishList;
+    return JSON.parse(localStorage.getItem("wishList")) || {};
   });
 
   const toggleWishListItem = (product_id) => {
-    const newWishList = {
-      ...wishList,
-      [product_id]: !wishList[product_id],
-    };
+    const newWishList = { ...wishList, [product_id]: !wishList[product_id] };
     localStorage.setItem("wishList", JSON.stringify(newWishList));
     setWishList(newWishList);
   };
@@ -91,13 +83,14 @@ export default function ProductPage() {
   useEffect(() => {
     getProductsAll();
   }, []);
+
   useEffect(() => {
     getProducts(1, currentCategory === "all" ? "" : currentCategory);
   }, [currentCategory]);
 
   useEffect(() => {
     filterProducts();
-  }, [searchTerm, sortOrder, products]);
+  }, [filterProducts]);
 
   return (
     <>
