@@ -17,7 +17,9 @@ export default function HomeView() {
   const indexSwiperRef = useRef(null);
 
   const [wishList, setWishList] = useState(() => {
-    const initWishList = localStorage.getItem("wishList") ? JSON.parse(localStorage.getItem("wishList")) : {};
+    const initWishList = localStorage.getItem("wishList")
+      ? JSON.parse(localStorage.getItem("wishList"))
+      : {};
     return initWishList;
   });
 
@@ -32,7 +34,7 @@ export default function HomeView() {
 
   const getProducts = async () => {
     try {
-      const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/products/all`);
+      const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/products`);
       setProducts(res.data.products);
     } catch (error) {
       alert("取得產品失敗: " + error);
@@ -68,7 +70,10 @@ export default function HomeView() {
           >
             {products.map((product) => (
               <SwiperSlide key={product.id}>
-                <Link className="position-relative" to={`/products/${product.id}`}>
+                <Link
+                  className="d-block position-relative"
+                  to={`/products/${product.id}`}
+                >
                   <img src={product.imageUrl} alt={product.title} />
                   <button
                     className="index-heart"
@@ -78,13 +83,20 @@ export default function HomeView() {
                     }}
                     type="button"
                   >
-                    {wishList?.[product.id] ? <i className="bi bi-heart-fill"></i> : <i className="bi bi-heart"></i>}
+                    {wishList?.[product.id] ? (
+                      <i className="bi bi-heart-fill"></i>
+                    ) : (
+                      <i className="bi bi-heart"></i>
+                    )}
                   </button>
                 </Link>
               </SwiperSlide>
             ))}
           </Swiper>
-          <button onClick={() => navigate("/products")} className="indexbtn mx-auto">
+          <button
+            onClick={() => navigate("/products")}
+            className="indexbtn mx-auto"
+          >
             Watch more!!
           </button>
         </div>
