@@ -4,7 +4,7 @@ import "swiper/css/thumbs";
 import "swiper/css/free-mode";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Thumbs, FreeMode } from "swiper/modules";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import { useDispatch } from "react-redux";
@@ -22,23 +22,24 @@ export default function ProductInner() {
   const [thumbsSwiper, setThumbsSwiper] = useState(null); // Swiper 物件
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const getCart = async () => {
+
+  const getCart = useCallback(async () => {
     try {
       const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/cart`);
       dispatch(updateCartData(res.data.data));
     } catch (error) {
       alert(`取得購物車失敗: ${error.message}`);
     }
-  };
+  }, [dispatch]);
 
-  const getProducts = async () => {
+  const getProducts = useCallback(async () => {
     try {
       const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/product/${id}`);
       setProduct(res.data.product);
     } catch (error) {
-      alert("取得產品失敗", `${error}`);
+      alert(`取得產品失敗: ${error.message}`);
     }
-  };
+  }, [id]);
 
   const addToCart = async (product_id, qty) => {
     setSmallLoading(true);
@@ -51,14 +52,14 @@ export default function ProductInner() {
       setQtySelect(1);
       alert("加入購物車成功");
     } catch (error) {
-      alert("加入購物車失敗", `${error}`);
+      alert(`加入購物車失敗: ${error.message}`);
     }
   };
 
   useEffect(() => {
     getProducts();
     getCart();
-  }, []);
+  }, [getProducts, getCart]);
 
   return (
     <>
@@ -125,7 +126,7 @@ export default function ProductInner() {
                     <h2>{product.title}</h2>
                     <p>{product.description}</p>
                     <p>{product.content}</p>
-                    <p> 價格：${product.price}</p>
+                    <p>價格：${product.price}</p>
 
                     <div className="inner-order">
                       <label htmlFor="innerOrder">訂購數量</label>
