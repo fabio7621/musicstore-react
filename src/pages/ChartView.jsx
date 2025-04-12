@@ -1,9 +1,26 @@
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { Bar, Pie } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from "chart.js";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
@@ -53,10 +70,32 @@ export default function ChartView() {
       plugins: {
         legend: {
           position: "top",
+          labels: {
+            color: "#fff",
+          },
         },
         title: {
           display: true,
           text: "Top 10 Sales Rank",
+          color: "#fff",
+        },
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: "#fff",
+          },
+          title: {
+            color: "#fff",
+          },
+        },
+        y: {
+          ticks: {
+            color: "#fff",
+          },
+          title: {
+            color: "#fff",
+          },
         },
       },
     }),
@@ -106,15 +145,20 @@ export default function ChartView() {
       plugins: {
         legend: {
           position: "top",
+          labels: {
+            color: "#fff",
+          },
         },
         title: {
           display: true,
           text: "Category Sales Distribution",
+          color: "#fff",
         },
       },
     }),
     []
   );
+
   return (
     <>
       <section className="pages-bread">
@@ -164,11 +208,19 @@ export default function ChartView() {
                   <div className="page-chart-main">
                     <div className="page-chart-item">
                       <h3>All sales rank</h3>
-                      <Bar className="page-chart-target" data={data} options={options} />
+                      <Bar
+                        className="page-chart-target"
+                        data={data}
+                        options={options}
+                      />
                     </div>
                     <div className="page-chart-item">
                       <h3>All style rank</h3>
-                      <Pie className="page-chart-target pie" data={pieChartData} options={pieOptions} />
+                      <Pie
+                        className="page-chart-target pie"
+                        data={pieChartData}
+                        options={pieOptions}
+                      />
                     </div>
                   </div>
                 </div>

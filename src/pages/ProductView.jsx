@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import ReactLoading from "react-loading";
 
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
 
 export default function ProductPage() {
+  const [isLoading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("high");
   const [pagination, setPagination] = useState({});
@@ -20,15 +22,19 @@ export default function ProductPage() {
 
   const getProductsAll = async () => {
     try {
+      setLoading(true);
       const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/products/all`);
       setProductsAll(res.data.products);
     } catch (error) {
       alert("取得產品失敗", `${error}`);
+    } finally {
+      setLoading(false);
     }
   };
 
   const getProducts = async (page = 1, category = "") => {
     try {
+      setLoading(true);
       const res = await axios.get(
         `${apiUrl}/v2/api/${apiPath}/products?category=${category}&page=${page}`
       );
@@ -37,6 +43,8 @@ export default function ProductPage() {
       setFilteredProducts(res.data.products);
     } catch (error) {
       alert("取得產品失敗", `${error}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -94,6 +102,19 @@ export default function ProductPage() {
 
   return (
     <>
+      {isLoading && (
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(255,255,255,0.3)",
+            zIndex: 999,
+          }}
+        >
+          <ReactLoading type="spin" color="black" width="4rem" height="4rem" />
+        </div>
+      )}
       <section className="pages-bread">
         <div className="pages-bread-main d-flex align-items-center justify-between">
           <ul className="pages-bread-nav">
