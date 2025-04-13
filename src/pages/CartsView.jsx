@@ -110,6 +110,7 @@ export default function CartPage() {
           <ReactLoading type="spin" color="black" width="4rem" height="4rem" />
         </div>
       )}
+
       <section className="pages-bread">
         <div className="pages-bread-main d-flex align-items-center justify-between">
           <ul className="pages-bread-nav">
@@ -122,6 +123,7 @@ export default function CartPage() {
           </ul>
         </div>
       </section>
+
       <section className="page-product">
         <div className="page-product-main">
           <div className="page-title-box">
@@ -129,6 +131,7 @@ export default function CartPage() {
               <h1>Shop Cart</h1>
             </div>
           </div>
+
           <table className="shopcart-list">
             <thead>
               <tr>
@@ -199,15 +202,18 @@ export default function CartPage() {
               ))}
             </tbody>
           </table>
+
           <div className="page-middle-box w-100 d-flex justify-content-center">
             <button
-              onClick={() => removeCart()}
+              onClick={removeCart}
               className="page-shop-btn mx-auto"
               type="button"
+              disabled={cart.carts?.length === 0 || isLoading}
             >
               清空購物車
             </button>
           </div>
+
           <form onSubmit={onSubmit} className="page-shop-form">
             <div className="shop-form-item">
               <label htmlFor="email">Email</label>
@@ -223,9 +229,10 @@ export default function CartPage() {
                 type="email"
                 name="email"
                 placeholder="請輸入Email"
+                id="email"
               />
               {errors.email && (
-                <p className="text-danger my-2">{errors.email?.message}</p>
+                <p className="my-2 form-danger">{errors.email.message}</p>
               )}
             </div>
 
@@ -235,11 +242,12 @@ export default function CartPage() {
                 {...register("name", { required: "請輸入姓名" })}
                 type="text"
                 name="name"
+                id="name"
                 className={errors.name ? "is-invalid" : ""}
                 placeholder="請輸入收件人姓名"
               />
               {errors.name && (
-                <p className="text-danger my-2">{errors.name?.message}</p>
+                <p className="my-2 form-danger">{errors.name.message}</p>
               )}
             </div>
 
@@ -259,7 +267,7 @@ export default function CartPage() {
                 placeholder="請輸入電話"
               />
               {errors.tel && (
-                <p className="text-danger my-2">{errors.tel?.message}</p>
+                <p className="my-2 form-danger">{errors.tel.message}</p>
               )}
             </div>
 
@@ -272,20 +280,20 @@ export default function CartPage() {
                 placeholder="請輸入地址"
               />
               {errors.address && (
-                <p className="text-danger my-2">{errors.address?.message}</p>
+                <p className="my-2 form-danger">{errors.address.message}</p>
               )}
             </div>
 
             <div className="shop-form-item">
               <label htmlFor="message">留言</label>
-              <textarea
-                {...register("message")}
-                id="message"
-                name="message"
-              ></textarea>
+              <textarea {...register("message")} id="message" name="message" />
             </div>
 
-            <button className="page-shop-btn mx-auto" type="submit">
+            <button
+              className="page-shop-btn mx-auto"
+              type="submit"
+              disabled={cart.carts?.length === 0 || isLoading}
+            >
               送出訂單
             </button>
           </form>

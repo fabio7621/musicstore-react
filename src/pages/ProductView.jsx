@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import ReactLoading from "react-loading";
+import PagePagination from "../components/PagePagination";
 
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
@@ -209,44 +210,7 @@ export default function ProductPage() {
               </Link>
             ))}
           </div>
-
-          <nav className="pages-pagination">
-            <ul className="pagination mx-auto">
-              <li
-                className={`page-item ${!pagination.has_pre && "disabled"}`}
-                onClick={() => pagesChange(pagination.current_page - 1)}
-              >
-                <button className="page-link" aria-label="Previous">
-                  <span aria-hidden="true">&laquo;</span>
-                </button>
-              </li>
-              {Array.from({ length: pagination.total_pages }).map(
-                (_, index) => (
-                  <li
-                    key={index}
-                    className={`page-item ${
-                      pagination.current_page === index + 1 ? "active" : ""
-                    }`}
-                  >
-                    <button
-                      onClick={() => pagesChange(index + 1)}
-                      className="page-link"
-                    >
-                      {index + 1}
-                    </button>
-                  </li>
-                )
-              )}
-              <li
-                className={`page-item ${!pagination.has_next && "disabled"}`}
-                onClick={() => pagesChange(pagination.current_page + 1)}
-              >
-                <button className="page-link" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-                </button>
-              </li>
-            </ul>
-          </nav>
+          <PagePagination pagesChange={pagesChange} pagination={pagination} />
         </div>
       </section>
     </>
