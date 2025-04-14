@@ -9,7 +9,7 @@ function DelModel({
 }) {
   useEffect(() => {
     delprodModel.current = new Modal(delProductRef.current);
-  }, []);
+  }, [delProductRef, delprodModel]);
 
   return (
     <div

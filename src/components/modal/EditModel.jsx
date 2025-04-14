@@ -15,7 +15,7 @@ function EditModel({
 }) {
   useEffect(() => {
     prodModel.current = new Modal(productRef.current);
-  }, []);
+  }, [prodModel, productRef]);
   return (
     <div
       ref={productRef}
@@ -76,7 +76,7 @@ function EditModel({
                 </div>
 
                 {/* 副圖 */}
-                <div className="border border-2 border-dashed rounded-3 p-3">
+                <div className="border  border-dashed rounded-3 p-3">
                   {tempProduct.imagesUrl?.map((image, index) => (
                     <div key={index} className="mb-2">
                       <label
@@ -146,7 +146,7 @@ function EditModel({
                   />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="title" className="form-label">
+                  <label htmlFor="singer" className="form-label">
                     歌手
                   </label>
                   <input
@@ -160,7 +160,7 @@ function EditModel({
                   />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="title" className="form-label">
+                  <label htmlFor="sales" className="form-label">
                     銷量
                   </label>
                   <input
@@ -216,6 +216,7 @@ function EditModel({
                       type="number"
                       className="form-control"
                       placeholder="請輸入原價"
+                      min="0"
                     />
                   </div>
                   <div className="col-6">
@@ -230,6 +231,7 @@ function EditModel({
                       type="number"
                       className="form-control"
                       placeholder="請輸入售價"
+                      min="0"
                     />
                   </div>
                 </div>
