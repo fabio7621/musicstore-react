@@ -1,28 +1,31 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import axios from "axios";
 import { Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from "chart.js";
-
+import { pushMessage } from "../redux/toastSlice";
+import { useDispatch } from "react-redux";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const apiPath = import.meta.env.VITE_API_PATH;
 
 export default function ChartView() {
+  const dispatch = useDispatch();
   const [products, setProducts] = useState([]);
 
-  const getProducts = async () => {
+  const getProducts = useCallback(async () => {
     try {
       const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/products/all`);
       setProducts(res.data.products);
     } catch (error) {
-      alert("取得產品失敗", `${error}`);
+      const { message } = error.response.data;
+      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [getProducts]);
 
   const topSales = useMemo(() => {
     return [...products].sort((a, b) => b.sales - a.sales).slice(0, 10);

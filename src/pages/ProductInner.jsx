@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Thumbs, FreeMode } from "swiper/modules";
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
+import { pushMessage } from "../redux/toastSlice";
 import { useDispatch } from "react-redux";
 import { updateCartData } from "../../src/redux/cartSlice";
 
@@ -28,7 +28,8 @@ export default function ProductInner() {
       const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/cart`);
       dispatch(updateCartData(res.data.data));
     } catch (error) {
-      alert(`取得購物車失敗: ${error.message}`);
+      const { message } = error.response.data;
+      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
     }
   }, [dispatch]);
 
@@ -37,9 +38,10 @@ export default function ProductInner() {
       const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/product/${id}`);
       setProduct(res.data.product);
     } catch (error) {
-      alert(`取得產品失敗: ${error.message}`);
+      const { message } = error.response.data;
+      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
     }
-  }, [id]);
+  }, [id, dispatch]);
 
   const addToCart = async (product_id, qty) => {
     setSmallLoading(true);
@@ -50,9 +52,10 @@ export default function ProductInner() {
       getCart();
       setSmallLoading(false);
       setQtySelect(1);
-      alert("加入購物車成功");
+      dispatch(pushMessage({ text: "加入購物車成功", status: "success" }));
     } catch (error) {
-      alert(`加入購物車失敗: ${error.message}`);
+      const { message } = error.response.data;
+      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
     }
   };
 
