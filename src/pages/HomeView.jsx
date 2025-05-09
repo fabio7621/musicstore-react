@@ -52,38 +52,41 @@ export default function HomeView() {
               全部專輯 <span>Albums</span>
             </h2>
           </div>
-          <Swiper
-            ref={indexSwiperRef}
-            modules={[Autoplay, Pagination]}
-            slidesPerView={1}
-            spaceBetween={30}
-            loop={true}
-            pagination={{ clickable: true }}
-            autoplay={{ delay: 3000, disableOnInteraction: false }}
-            breakpoints={{
-              992: { slidesPerView: 3 },
-              0: { slidesPerView: 1 },
-            }}
-            className="indexSwiper"
-          >
-            {products.map((product) => (
-              <SwiperSlide key={product.id}>
-                <Link className="d-block position-relative" to={`/products/${product.id}`}>
-                  <img src={product.imageUrl} alt={product.title} />
-                  <button
-                    className="index-heart"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      toggleWishListItem(product.id);
-                    }}
-                    type="button"
-                  >
-                    {wishList?.[product.id] ? <i className="bi bi-heart-fill"></i> : <i className="bi bi-heart"></i>}
-                  </button>
-                </Link>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          {products.length > 0 && (
+            <Swiper
+              ref={indexSwiperRef}
+              modules={[Autoplay, Pagination]}
+              slidesPerView={1}
+              spaceBetween={30}
+              loop={true}
+              pagination={{ clickable: true }}
+              autoplay={{ delay: 2500, disableOnInteraction: false }}
+              breakpoints={{
+                992: { slidesPerView: 3 },
+                0: { slidesPerView: 1 },
+              }}
+              className="indexSwiper"
+            >
+              {products.map((product) => (
+                <SwiperSlide key={product.id}>
+                  <Link className="d-block position-relative" to={`/products/${product.id}`}>
+                    <img src={product.imageUrl} alt={product.title} />
+                    <button
+                      className="index-heart"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        toggleWishListItem(product.id);
+                      }}
+                      type="button"
+                    >
+                      {wishList?.[product.id] ? <i className="bi bi-heart-fill"></i> : <i className="bi bi-heart"></i>}
+                    </button>
+                  </Link>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
+
           <button onClick={() => navigate("/products")} className="indexbtn mx-auto">
             Watch more!!
           </button>
