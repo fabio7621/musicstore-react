@@ -17,9 +17,7 @@ export default function AdminProducts() {
   const getProducts = useCallback(
     async (page = 1) => {
       try {
-        const res = await axios.get(
-          `${apiUrl}/v2/api/${apiPath}/admin/products?page=${page}`
-        );
+        const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/admin/products?page=${page}`);
         setProducts(res.data.products);
         setPagination(res.data.pagination);
       } catch (error) {
@@ -29,15 +27,6 @@ export default function AdminProducts() {
     },
     [dispatch]
   );
-  const checkUserLogin = useCallback(async () => {
-    try {
-      await axios.post(`${apiUrl}/v2/api/user/check`);
-      getProducts();
-    } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message, status: "failed" }));
-    }
-  }, [getProducts, dispatch]);
 
   //model
   const prodModel = useRef(null);
@@ -151,17 +140,14 @@ export default function AdminProducts() {
   };
   const editProduct = async () => {
     try {
-      await axios.put(
-        `${apiUrl}/v2/api/${apiPath}/admin/product/${tempProduct.id}`,
-        {
-          data: {
-            ...tempProduct,
-            origin_price: Number(tempProduct.origin_price),
-            price: Number(tempProduct.price),
-            is_enabled: tempProduct.is_enabled ? 1 : 0,
-          },
-        }
-      );
+      await axios.put(`${apiUrl}/v2/api/${apiPath}/admin/product/${tempProduct.id}`, {
+        data: {
+          ...tempProduct,
+          origin_price: Number(tempProduct.origin_price),
+          price: Number(tempProduct.price),
+          is_enabled: tempProduct.is_enabled ? 1 : 0,
+        },
+      });
       dispatch(pushMessage({ text: "編輯成功", status: "success" }));
     } catch (error) {
       const { message } = error.response.data;
@@ -178,9 +164,7 @@ export default function AdminProducts() {
         closeProductModel();
         dispatch(pushMessage({ text: "操作成功", status: "success" }));
       } else {
-        dispatch(
-          pushMessage({ text: res.data.message.join(","), status: "failed" })
-        );
+        dispatch(pushMessage({ text: res.data.message.join(","), status: "failed" }));
       }
     } catch (error) {
       const { message } = error.response?.data || { message: ["操作失敗"] };
@@ -190,10 +174,19 @@ export default function AdminProducts() {
 
   const delProduct = async () => {
     try {
-      await axios.delete(
-        `${apiUrl}/v2/api/${apiPath}/admin/product/${tempProduct.id}`
-      );
+      await axios.delete(`${apiUrl}/v2/api/${apiPath}/admin/product/${tempProduct.id}`);
       dispatch(pushMessage({ text: "刪除成功", status: "success" }));
+    } catch (error) {
+      const { message } = error.response.data;
+      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await axios.post(`${apiUrl}/v2/logout`);
+      dispatch(pushMessage({ text: "登出成功", status: "success" }));
+      window.location.href = "/";
     } catch (error) {
       const { message } = error.response.data;
       dispatch(pushMessage({ text: message.join(","), status: "failed" }));
@@ -210,6 +203,7 @@ export default function AdminProducts() {
       dispatch(pushMessage({ text: message.join(","), status: "failed" }));
     }
   };
+
   //分頁
   const [pagination, setPagination] = useState({});
 
@@ -222,10 +216,7 @@ export default function AdminProducts() {
     const formData = new FormData();
     formData.append("file-to-upload", file);
     try {
-      const res = await axios.post(
-        `${apiUrl}/v2/api/${apiPath}/admin/upload`,
-        formData
-      );
+      const res = await axios.post(`${apiUrl}/v2/api/${apiPath}/admin/upload`, formData);
       const uploadImageUrl = res.data.imageUrl;
       setTempProduct({
         ...tempProduct,
@@ -239,13 +230,8 @@ export default function AdminProducts() {
   };
 
   useEffect(() => {
-    const token = document.cookie.replace(
-      /(?:(?:^|.*;\s*)fabio20\s*=\s*([^;]*).*$)|^.*$/,
-      "$1"
-    );
-    axios.defaults.headers.common["Authorization"] = token;
-    checkUserLogin();
-  }, [checkUserLogin]);
+    getProducts();
+  }, [getProducts]);
 
   return (
     <>
@@ -255,10 +241,15 @@ export default function AdminProducts() {
             <div className="d-flex justify-content-between">
               <h2>產品列表</h2>
               <button
-                onClick={() => openProductModel("create")}
+                className="btn bg-danger text-white"
+                onClick={() => {
+                  logout();
+                }}
                 type="button"
-                className="btn btn-primary"
               >
+                登出
+              </button>
+              <button onClick={() => openProductModel("create")} type="button" className="btn btn-primary">
                 新增產品
               </button>
             </div>
@@ -279,27 +270,13 @@ export default function AdminProducts() {
                     <th scope="row">{product.title}</th>
                     <td>{product.origin_price}</td>
                     <td>{product.price}</td>
-                    <td>
-                      {product.is_enabled ? (
-                        <span className="text-success">啟用</span>
-                      ) : (
-                        <span>未啟用</span>
-                      )}
-                    </td>
+                    <td>{product.is_enabled ? <span className="text-success">啟用</span> : <span>未啟用</span>}</td>
                     <td>
                       <div className="btn-group">
-                        <button
-                          onClick={() => openProductModel("edit", product)}
-                          type="button"
-                          className="btn btn-outline-primary btn-sm"
-                        >
+                        <button onClick={() => openProductModel("edit", product)} type="button" className="btn btn-outline-primary btn-sm">
                           編輯
                         </button>
-                        <button
-                          onClick={() => openDelModel(product)}
-                          type="button"
-                          className="btn btn-outline-danger btn-sm"
-                        >
+                        <button onClick={() => openDelModel(product)} type="button" className="btn btn-outline-danger btn-sm">
                           刪除
                         </button>
                       </div>
