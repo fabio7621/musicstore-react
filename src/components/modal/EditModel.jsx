@@ -17,24 +17,12 @@ function EditModel({
     prodModel.current = new Modal(productRef.current);
   }, [prodModel, productRef]);
   return (
-    <div
-      ref={productRef}
-      id="productModal"
-      className="modal"
-      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-    >
+    <div ref={productRef} id="productModal" className="modal" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
       <div className="modal-dialog modal-dialog-centered modal-xl">
         <div className="modal-content border-0 shadow">
           <div className="modal-header border-bottom">
-            <h5 className="modal-title fs-4">
-              {modelMode === "create" ? "新增產品" : "編輯產品"}
-            </h5>
-            <button
-              onClick={closeProductModel}
-              type="button"
-              className="btn-close"
-              aria-label="Close"
-            ></button>
+            <h5 className="modal-title fs-4">{modelMode === "create" ? "新增產品" : "編輯產品"}</h5>
+            <button onClick={closeProductModel} type="button" className="btn-close" aria-label="Close"></button>
           </div>
 
           <div className="modal-body p-4">
@@ -45,13 +33,7 @@ function EditModel({
                     {" "}
                     圖片上傳{" "}
                   </label>
-                  <input
-                    type="file"
-                    accept=".jpg,.jpeg,.png"
-                    className="form-control"
-                    id="fileInput"
-                    onChange={handleFileChange}
-                  />
+                  <input type="file" accept=".jpg,.jpeg,.png" className="form-control" id="fileInput" onChange={handleFileChange} />
                 </div>
                 <div className="mb-4">
                   <label htmlFor="primary-image" className="form-label">
@@ -68,21 +50,14 @@ function EditModel({
                       onChange={handleModelChange}
                     />
                   </div>
-                  <img
-                    src={tempProduct.imageUrl}
-                    alt={tempProduct.title}
-                    className="img-fluid"
-                  />
+                  <img src={tempProduct.imageUrl} alt={tempProduct.title} className="img-fluid" />
                 </div>
 
                 {/* 副圖 */}
                 <div className="border  border-dashed rounded-3 p-3">
                   {tempProduct.imagesUrl?.map((image, index) => (
                     <div key={index} className="mb-2">
-                      <label
-                        htmlFor={`imagesUrl-${index + 1}`}
-                        className="form-label"
-                      >
+                      <label htmlFor={`imagesUrl-${index + 1}`} className="form-label">
                         副圖 {index + 1}
                       </label>
                       <input
@@ -95,37 +70,22 @@ function EditModel({
                         placeholder={`圖片網址 ${index + 1}`}
                         className="form-control mb-2"
                       />
-                      {image && (
-                        <img
-                          src={image}
-                          alt={`副圖 ${index + 1}`}
-                          className="img-fluid mb-2"
-                        />
-                      )}
+                      {image && <img src={image} alt={`副圖 ${index + 1}`} className="img-fluid mb-2" />}
                     </div>
                   ))}
                   <div className="btn-group gap-2 w-100 mt-3">
                     {Array.isArray(tempProduct.imagesUrl) &&
                       tempProduct.imagesUrl.length < 5 &&
-                      tempProduct.imagesUrl[
-                        tempProduct.imagesUrl.length - 1
-                      ] !== "" && (
-                        <button
-                          onClick={handleImageAdd}
-                          className="btn btn-outline-primary btn-sm w-100 round-4"
-                        >
+                      tempProduct.imagesUrl[tempProduct.imagesUrl.length - 1] !== "" && (
+                        <button onClick={handleImageAdd} className="btn btn-outline-primary btn-sm w-100 round-4">
                           新增圖片
                         </button>
                       )}
-                    {Array.isArray(tempProduct.imagesUrl) &&
-                      tempProduct.imagesUrl.length > 1 && (
-                        <button
-                          onClick={handleImageDel}
-                          className="btn btn-outline-danger btn-sm w-100 round-4"
-                        >
-                          取消圖片
-                        </button>
-                      )}
+                    {Array.isArray(tempProduct.imagesUrl) && tempProduct.imagesUrl.length > 1 && (
+                      <button onClick={handleImageDel} className="btn btn-outline-danger btn-sm w-100 round-4">
+                        取消圖片
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -284,18 +244,10 @@ function EditModel({
           </div>
 
           <div className="modal-footer border-top bg-light">
-            <button
-              onClick={closeProductModel}
-              type="button"
-              className="btn btn-secondary"
-            >
+            <button onClick={closeProductModel} type="button" className="btn btn-secondary">
               取消
             </button>
-            <button
-              onClick={updateProduct}
-              type="button"
-              className="btn btn-primary"
-            >
+            <button onClick={updateProduct} type="button" className="btn btn-primary">
               確認
             </button>
           </div>

@@ -60,7 +60,7 @@ export default function HomeView() {
               spaceBetween={30}
               loop={true}
               pagination={{ clickable: true }}
-              autoplay={{ delay: 2500, disableOnInteraction: false }}
+              autoplay={{ delay: 3000, disableOnInteraction: false }}
               breakpoints={{
                 992: { slidesPerView: 3 },
                 0: { slidesPerView: 1 },

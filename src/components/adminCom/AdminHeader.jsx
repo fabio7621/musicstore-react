@@ -19,17 +19,13 @@ export default function AdminHeader() {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <NavLink
-                  to="/admin/product"
-                  className="nav-link active"
-                  aria-current="page"
-                >
+                <NavLink to="/admin/products" className="nav-link" aria-current="page">
                   Product
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to="/admin/link" className="nav-link">
-                  Link
+                <NavLink to="/admin/orders" className="nav-link">
+                  Orders
                 </NavLink>
               </li>
             </ul>

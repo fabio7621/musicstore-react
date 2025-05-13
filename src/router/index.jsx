@@ -10,6 +10,7 @@ import AdminLayout from "../layout/AdminLayout.jsx";
 import AdminProducts from "../pages/admin/AdminProducts.jsx";
 import ProductInner from "../pages/ProductInner.jsx";
 import CheckOut from "../pages/CheckoutView.jsx";
+import AdminOrders from "../pages/admin/AdminOrder.jsx";
 
 const router = createHashRouter([
   {
@@ -53,6 +54,10 @@ const router = createHashRouter([
       {
         path: "products",
         element: <AdminProducts />,
+      },
+      {
+        path: "orders",
+        element: <AdminOrders />,
       },
     ],
   },
