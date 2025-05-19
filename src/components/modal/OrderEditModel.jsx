@@ -4,27 +4,24 @@ import { Modal } from "bootstrap";
 export default function OrderEditModal({ orderModal, orderRef, tempOrder, closeOrderModel, updateOrder, getOrders }) {
   const [isPaid, setIsPaid] = useState(false);
 
-  // 初始化 Bootstrap Modal 實例
   useEffect(() => {
     orderModal.current = new Modal(orderRef.current);
   }, [orderModal, orderRef]);
 
-  // 每次切換 tempOrder 時更新付款狀態
   useEffect(() => {
     if (tempOrder && typeof tempOrder.is_paid === "boolean") {
       setIsPaid(tempOrder.is_paid);
     }
   }, [tempOrder]);
 
-  // 點擊更新按鈕時送出更新資料
   const handleUpdate = () => {
     const updatedOrder = {
       ...tempOrder,
       is_paid: isPaid,
     };
-    updateOrder(updatedOrder); // 傳給外層 API
+    updateOrder(updatedOrder);
     getOrders();
-    closeOrderModel(); // 關閉 Modal
+    closeOrderModel();
   };
 
   return (
@@ -38,7 +35,6 @@ export default function OrderEditModal({ orderModal, orderRef, tempOrder, closeO
 
           <div className="modal-body">
             <div className="row">
-              {/* 用戶資料 */}
               <div className="col-md-4">
                 <h3>用戶資料</h3>
                 <table className="table">
@@ -64,8 +60,6 @@ export default function OrderEditModal({ orderModal, orderRef, tempOrder, closeO
                   )}
                 </table>
               </div>
-
-              {/* 訂單資料 */}
               <div className="col-md-8">
                 <h3>訂單細節</h3>
                 <table className="table">
@@ -92,7 +86,6 @@ export default function OrderEditModal({ orderModal, orderRef, tempOrder, closeO
                     </tr>
                   </tbody>
                 </table>
-
                 <h3>選購商品</h3>
                 <table className="table">
                   <thead>
@@ -115,8 +108,6 @@ export default function OrderEditModal({ orderModal, orderRef, tempOrder, closeO
                       ))}
                   </tbody>
                 </table>
-
-                {/* 付款狀態 checkbox */}
                 <div className="d-flex justify-content-end mt-3">
                   <div className="form-check form-switch">
                     <input className="form-check-input" type="checkbox" id="paidSwitch-modal" checked={isPaid} onChange={(e) => setIsPaid(e.target.checked)} />
@@ -128,8 +119,6 @@ export default function OrderEditModal({ orderModal, orderRef, tempOrder, closeO
               </div>
             </div>
           </div>
-
-          {/* Footer 按鈕 */}
           <div className="modal-footer">
             <button type="button" className="btn btn-outline-secondary" onClick={closeOrderModel}>
               取消
