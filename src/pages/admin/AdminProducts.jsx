@@ -1,6 +1,7 @@
 import DelModel from "../../components/modal/DelModel";
 import EditModel from "../../components/modal/EditModel";
 import PagePagination from "../../components/PagePagination";
+import { useNavigate } from "react-router-dom";
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import axios from "axios";
@@ -13,6 +14,7 @@ const apiPath = import.meta.env.VITE_API_PATH;
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const getProducts = useCallback(
     async (page = 1) => {
@@ -186,7 +188,7 @@ export default function AdminProducts() {
     try {
       await axios.post(`${apiUrl}/v2/logout`);
       dispatch(pushMessage({ text: "登出成功", status: "success" }));
-      window.location.href = "/";
+      navigate("/");
     } catch (error) {
       const { message } = error.response.data;
       dispatch(pushMessage({ text: message.join(","), status: "failed" }));
