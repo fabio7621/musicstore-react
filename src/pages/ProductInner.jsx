@@ -1,18 +1,17 @@
+import { useEffect, useState, useCallback } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { Navigation, Thumbs, FreeMode } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/free-mode";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Thumbs, FreeMode } from "swiper/modules";
-import { useEffect, useState, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { pushMessage } from "../redux/toastSlice";
-import { useDispatch } from "react-redux";
-import { updateCartData } from "../../src/redux/cartSlice";
 
-import axios from "axios";
-const apiUrl = import.meta.env.VITE_BASE_URL;
-const apiPath = import.meta.env.VITE_API_PATH;
+import { API_BASE_URL, API_PATH, PRODUCT_QUANTITY_MAX } from "../constants/api";
+import { updateCartData } from "../redux/cartSlice";
+import { pushMessage } from "../redux/toastSlice";
 
 export default function ProductInner() {
   const { id } = useParams();
@@ -25,28 +24,28 @@ export default function ProductInner() {
 
   const getCart = useCallback(async () => {
     try {
-      const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/cart`);
+      const res = await axios.get(`${API_BASE_URL}/v2/api/${API_PATH}/cart`);
       dispatch(updateCartData(res.data.data));
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["操作失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     }
   }, [dispatch]);
 
   const getProducts = useCallback(async () => {
     try {
-      const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/product/${id}`);
+      const res = await axios.get(`${API_BASE_URL}/v2/api/${API_PATH}/product/${id}`);
       setProduct(res.data.product);
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["操作失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     }
   }, [id, dispatch]);
 
   const addToCart = async (product_id, qty) => {
     setSmallLoading(true);
     try {
-      await axios.post(`${apiUrl}/v2/api/${apiPath}/cart`, {
+      await axios.post(`${API_BASE_URL}/v2/api/${API_PATH}/cart`, {
         data: { product_id, qty: Number(qty) },
       });
       getCart();
@@ -54,8 +53,8 @@ export default function ProductInner() {
       setQtySelect(1);
       dispatch(pushMessage({ text: "加入購物車成功", status: "success" }));
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["操作失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     }
   };
 
@@ -134,7 +133,7 @@ export default function ProductInner() {
                     <div className="inner-order">
                       <label htmlFor="innerOrder">訂購數量</label>
                       <select value={qtySelect} onChange={(e) => setQtySelect(e.target.value)} id="qtySelect" className="form-select">
-                        {Array.from({ length: 10 }).map((_, index) => (
+                        {Array.from({ length: PRODUCT_QUANTITY_MAX }).map((_, index) => (
                           <option key={index} value={index + 1}>
                             {index + 1}
                           </option>

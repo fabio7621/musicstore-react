@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
-import FrontHeader from "../components/frontCom/FrontHeader";
+
 import FrontFooter from "../components/frontCom/FrontFooter";
+import FrontHeader from "../components/frontCom/FrontHeader";
 import PagesChart from "../components/PagesChart";
 import ToastMessage from "../components/Toast";
 

@@ -1,17 +1,16 @@
+import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { pushMessage } from "../../redux/toastSlice";
-import { useState, useEffect, useCallback, useRef } from "react";
+
 import PagePagination from "../../components/PagePagination";
 import OrderEditModal from "../../components/modal/OrderEditModel";
-
-const apiUrl = import.meta.env.VITE_BASE_URL;
-const apiPath = import.meta.env.VITE_API_PATH;
+import { API_BASE_URL, API_PATH } from "../../constants/api";
+import { pushMessage } from "../../redux/toastSlice";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [pagination, setPagination] = useState({});
-  const [tempOrder, setTempOder] = useState({});
+  const [tempOrder, setTempOrder] = useState({});
   const dispatch = useDispatch();
 
   //model
@@ -21,7 +20,7 @@ export default function AdminOrders() {
   // const delOrderModal = useRef(null);
 
   const openOrderModel = (order) => {
-    setTempOder(order);
+    setTempOrder(order);
     orderModal.current.show();
   };
   const closeOrderModel = () => {
@@ -32,11 +31,11 @@ export default function AdminOrders() {
   const getOrders = useCallback(
     async (page = 1) => {
       try {
-        const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/admin/orders?page=${page}`);
+        const res = await axios.get(`${API_BASE_URL}/v2/api/${API_PATH}/admin/orders?page=${page}`);
         setOrders(res.data.orders);
         setPagination(res.data.pagination);
       } catch (error) {
-        const { message } = error.response.data;
+        const message = (error.response && error.response.data && error.response.data.message) || "操作失敗";
         dispatch(pushMessage({ text: message, status: "failed" }));
       }
     },
@@ -46,7 +45,7 @@ export default function AdminOrders() {
   //刪除訂單
   const deleteOrder = async (id) => {
     try {
-      const res = await axios.delete(`${apiUrl}/v2/api/${apiPath}/admin/order/${id}`);
+      const res = await axios.delete(`${API_BASE_URL}/v2/api/${API_PATH}/admin/order/${id}`);
       dispatch(pushMessage({ text: res.data.message, status: "success" }));
       getOrders();
     } catch (error) {
@@ -57,7 +56,7 @@ export default function AdminOrders() {
   //刪除全部訂單
   const deleteAllOrders = async () => {
     try {
-      const res = await axios.delete(`${apiUrl}/v2/api/${apiPath}/admin/orders/all`);
+      const res = await axios.delete(`${API_BASE_URL}/v2/api/${API_PATH}/admin/orders/all`);
       dispatch(pushMessage({ text: res.data.message, status: "success" }));
       getOrders();
     } catch (error) {
@@ -74,7 +73,7 @@ export default function AdminOrders() {
         is_paid: !order.is_paid, // 切換付款狀態
       };
 
-      const res = await axios.put(`${apiUrl}/v2/api/${apiPath}/admin/order/${order.id}`, {
+      const res = await axios.put(`${API_BASE_URL}/v2/api/${API_PATH}/admin/order/${order.id}`, {
         data: updatedOrder,
       });
 
@@ -92,7 +91,7 @@ export default function AdminOrders() {
         ...order,
       };
 
-      const res = await axios.put(`${apiUrl}/v2/api/${apiPath}/admin/order/${order.id}`, {
+      const res = await axios.put(`${API_BASE_URL}/v2/api/${API_PATH}/admin/order/${order.id}`, {
         data: updatedOrder,
       });
 

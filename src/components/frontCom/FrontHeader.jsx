@@ -1,12 +1,11 @@
-import React, { useEffect, useCallback } from "react";
-import { Navbar, Nav } from "react-bootstrap";
+import { useEffect, useCallback } from "react";
+import { Navbar } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { updateCartData } from "../../redux/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
 
-const apiUrl = import.meta.env.VITE_BASE_URL;
-const apiPath = import.meta.env.VITE_API_PATH;
+import { API_BASE_URL, API_PATH } from "../../constants/api";
+import { updateCartData } from "../../redux/cartSlice";
 
 const routes = [
   { path: "/", name: "首頁" },
@@ -22,7 +21,7 @@ export default function FrontHeader() {
 
   const getCart = useCallback(async () => {
     try {
-      const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/cart`);
+      const res = await axios.get(`${API_BASE_URL}/v2/api/${API_PATH}/cart`);
       dispatch(updateCartData(res.data.data));
     } catch (error) {
       alert(`取得購物車失敗: ${error.message}`);

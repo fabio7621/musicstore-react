@@ -1,15 +1,13 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/autoplay";
-import { Autoplay, Pagination } from "swiper/modules";
-import axios from "axios";
-import { Link } from "react-router-dom";
 
-const apiUrl = import.meta.env.VITE_BASE_URL;
-const apiPath = import.meta.env.VITE_API_PATH;
+import { API_BASE_URL, API_PATH, SWIPER_AUTOPLAY_DELAY_MS } from "../constants/api";
 
 export default function HomeView() {
   const navigate = useNavigate();
@@ -17,8 +15,12 @@ export default function HomeView() {
   const indexSwiperRef = useRef(null);
 
   const [wishList, setWishList] = useState(() => {
-    const initWishList = localStorage.getItem("wishList") ? JSON.parse(localStorage.getItem("wishList")) : {};
-    return initWishList;
+    try {
+      const stored = localStorage.getItem("wishList");
+      return stored ? JSON.parse(stored) : {};
+    } catch {
+      return {};
+    }
   });
 
   const toggleWishListItem = (product_id) => {
@@ -32,10 +34,11 @@ export default function HomeView() {
 
   const getProducts = async () => {
     try {
-      const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/products`);
-      setProducts(res.data.products);
+      const res = await axios.get(`${API_BASE_URL}/v2/api/${API_PATH}/products`);
+      setProducts((res.data && res.data.products) || []);
     } catch (error) {
-      alert("取得產品失敗: " + error);
+      const msg = (error.response && error.response.data && error.response.data.message) || error.message || "取得產品失敗";
+      alert(`取得產品失敗: ${Array.isArray(msg) ? msg.join(", ") : msg}`);
     }
   };
 
@@ -60,7 +63,7 @@ export default function HomeView() {
               spaceBetween={30}
               loop={true}
               pagination={{ clickable: true }}
-              autoplay={{ delay: 3000, disableOnInteraction: false }}
+              autoplay={{ delay: SWIPER_AUTOPLAY_DELAY_MS, disableOnInteraction: false }}
               breakpoints={{
                 992: { slidesPerView: 3 },
                 0: { slidesPerView: 1 },

@@ -1,29 +1,28 @@
 import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import ReactLoading from "react-loading";
 import axios from "axios";
-import { updateCartData, clearCartData } from "../redux/cartSlice";
+import ReactLoading from "react-loading";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
+import { API_BASE_URL, API_PATH } from "../constants/api";
+import { clearCartData, updateCartData } from "../redux/cartSlice";
 import { pushMessage } from "../redux/toastSlice";
 
-const apiUrl = import.meta.env.VITE_BASE_URL;
-const apiPath = import.meta.env.VITE_API_PATH;
-
-export default function CartPage() {
-  const [cart, setCart] = useState([]);
+export default function CartsView() {
+  const [cart, setCart] = useState({ carts: [] });
   const [isLoading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const getCart = useCallback(async () => {
     try {
-      const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/cart`);
+      const res = await axios.get(`${API_BASE_URL}/v2/api/${API_PATH}/cart`);
       setCart(res.data.data);
       dispatch(updateCartData(res.data.data));
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["操作失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     }
   }, [dispatch]);
 
@@ -34,12 +33,12 @@ export default function CartPage() {
   const removeCart = async () => {
     setLoading(true);
     try {
-      await axios.delete(`${apiUrl}/v2/api/${apiPath}/carts`);
+      await axios.delete(`${API_BASE_URL}/v2/api/${API_PATH}/carts`);
       dispatch(clearCartData());
       getCart();
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["操作失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     } finally {
       setLoading(false);
     }
@@ -48,11 +47,11 @@ export default function CartPage() {
   const removeCartItem = async (id) => {
     setLoading(true);
     try {
-      await axios.delete(`${apiUrl}/v2/api/${apiPath}/cart/${id}`);
+      await axios.delete(`${API_BASE_URL}/v2/api/${API_PATH}/cart/${id}`);
       getCart();
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["操作失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     } finally {
       setLoading(false);
     }
@@ -61,13 +60,13 @@ export default function CartPage() {
   const updateCart = async (cart_Id, product_id, qty) => {
     setLoading(true);
     try {
-      await axios.put(`${apiUrl}/v2/api/${apiPath}/cart/${cart_Id}`, {
+      await axios.put(`${API_BASE_URL}/v2/api/${API_PATH}/cart/${cart_Id}`, {
         data: { product_id, qty: Number(qty) },
       });
       getCart();
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["操作失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     } finally {
       setLoading(false);
     }
@@ -76,13 +75,13 @@ export default function CartPage() {
   const checkout = async (data) => {
     setLoading(true);
     try {
-      await axios.post(`${apiUrl}/v2/api/${apiPath}/order`, data);
+      await axios.post(`${API_BASE_URL}/v2/api/${API_PATH}/order`, data);
       reset();
       getCart();
       navigate("/checkout");
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["操作失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     } finally {
       setLoading(false);
     }

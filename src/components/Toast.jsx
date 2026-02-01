@@ -1,6 +1,8 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Toast as BsToast } from "bootstrap/dist/js/bootstrap.esm";
+
+import { TOAST_DURATION_MS } from "../constants/api";
 import { removeMessage } from "../redux/toastSlice";
 
 export default function ToastMessage() {
@@ -24,7 +26,7 @@ export default function ToastMessage() {
 
         const timer = setTimeout(() => {
           removeMessageCallback(message.id);
-        }, 2000);
+        }, TOAST_DURATION_MS);
 
         return () => clearTimeout(timer);
       }

@@ -2,14 +2,13 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import ReactLoading from "react-loading";
-import PagePagination from "../components/PagePagination";
-import { pushMessage } from "../redux/toastSlice";
 import { useDispatch } from "react-redux";
 
-const apiUrl = import.meta.env.VITE_BASE_URL;
-const apiPath = import.meta.env.VITE_API_PATH;
+import PagePagination from "../components/PagePagination";
+import { API_BASE_URL, API_PATH } from "../constants/api";
+import { pushMessage } from "../redux/toastSlice";
 
-export default function ProductPage() {
+export default function ProductView() {
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,11 +24,11 @@ export default function ProductPage() {
   const getProductsAll = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/products/all`);
+      const res = await axios.get(`${API_BASE_URL}/v2/api/${API_PATH}/products/all`);
       setProductsAll(res.data.products);
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["取得失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     } finally {
       setLoading(false);
     }
@@ -39,7 +38,7 @@ export default function ProductPage() {
     async (page = 1, category = "") => {
       try {
         setLoading(true);
-        const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/products?category=${category}&page=${page}`);
+        const res = await axios.get(`${API_BASE_URL}/v2/api/${API_PATH}/products?category=${category}&page=${page}`);
         setPagination(res.data.pagination);
         setProducts(res.data.products);
         setFilteredProducts(res.data.products);
@@ -80,7 +79,12 @@ export default function ProductPage() {
   };
 
   const [wishList, setWishList] = useState(() => {
-    return JSON.parse(localStorage.getItem("wishList")) || {};
+    try {
+      const stored = localStorage.getItem("wishList");
+      return stored ? JSON.parse(stored) : {};
+    } catch {
+      return {};
+    }
   });
 
   const toggleWishListItem = (product_id) => {

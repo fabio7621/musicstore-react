@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const toastSlince = createSlice({
+const toastSlice = createSlice({
   name: "toast",
   initialState: {
     messages: [],
@@ -8,7 +8,7 @@ const toastSlince = createSlice({
   reducers: {
     pushMessage(state, action) {
       const { text, status } = action.payload;
-      const id = new Date().getTime();
+      const id = Date.now();
       state.messages.push({
         id,
         text,
@@ -25,6 +25,6 @@ const toastSlince = createSlice({
   },
 });
 
-export const { pushMessage, removeMessage } = toastSlince.actions;
+export const { pushMessage, removeMessage } = toastSlice.actions;
 
-export default toastSlince.reducer;
+export default toastSlice.reducer;

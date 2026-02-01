@@ -1,16 +1,17 @@
 import { createHashRouter } from "react-router-dom";
-import HomeView from "../pages/HomeView";
-import ProductView from "../pages/ProductView.jsx";
-import LoginView from "../pages/LoginView";
-import CartsView from "../pages/CartsView.jsx";
-import ChartView from "../pages/ChartView.jsx";
+
+import AdminLayout from "../layout/AdminLayout";
 import FrontLayout from "../layout/FrontLayout";
-import NotfoundView from "../pages/NotfoundView.jsx";
-import AdminLayout from "../layout/AdminLayout.jsx";
-import AdminProducts from "../pages/admin/AdminProducts.jsx";
-import ProductInner from "../pages/ProductInner.jsx";
-import CheckOut from "../pages/CheckoutView.jsx";
-import AdminOrders from "../pages/admin/AdminOrder.jsx";
+import AdminOrders from "../pages/admin/AdminOrder";
+import AdminProducts from "../pages/admin/AdminProducts";
+import CartsView from "../pages/CartsView";
+import ChartView from "../pages/ChartView";
+import CheckoutView from "../pages/CheckoutView";
+import HomeView from "../pages/HomeView";
+import NotfoundView from "../pages/NotfoundView";
+import ProductInner from "../pages/ProductInner";
+import ProductView from "../pages/ProductView";
+import LoginView from "../pages/LoginView";
 
 const router = createHashRouter([
   {
@@ -43,7 +44,7 @@ const router = createHashRouter([
       },
       {
         path: "checkout",
-        element: <CheckOut />,
+        element: <CheckoutView />,
       },
     ],
   },

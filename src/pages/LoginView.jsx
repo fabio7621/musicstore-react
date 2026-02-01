@@ -1,11 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { pushMessage } from "../redux/toastSlice";
 import { useNavigate } from "react-router-dom";
 
-export default function LoginPage() {
-  const apiUrl = import.meta.env.VITE_BASE_URL;
+import { API_BASE_URL, AUTH_COOKIE_NAME } from "../constants/api";
+import { pushMessage } from "../redux/toastSlice";
+
+export default function LoginView() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [account, setAccount] = useState({
@@ -25,12 +26,10 @@ export default function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${apiUrl}/v2/admin/signin`, account);
+      const res = await axios.post(`${API_BASE_URL}/v2/admin/signin`, account);
       const { token, expired } = res.data;
 
-      document.cookie = `fabio20=${token}; expires=${new Date(
-        expired
-      ).toUTCString()}; path=/`;
+      document.cookie = `${AUTH_COOKIE_NAME}=${token}; expires=${new Date(expired).toUTCString()}; path=/`;
       axios.defaults.headers.common["Authorization"] = token;
 
       dispatch(pushMessage({ text: "登入成功", status: "success" }));

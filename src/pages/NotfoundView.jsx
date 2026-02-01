@@ -1,13 +1,15 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function NotfounView() {
+import { NOT_FOUND_REDIRECT_DELAY_MS } from "../constants/api";
+
+export default function NotfoundView() {
   const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => {
       navigate("/");
-    }, 1500);
+    }, NOT_FOUND_REDIRECT_DELAY_MS);
 
     return () => clearTimeout(timer);
   }, [navigate]);

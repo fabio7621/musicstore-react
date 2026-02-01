@@ -1,13 +1,13 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import axios from "axios";
-import { Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from "chart.js";
-import { pushMessage } from "../redux/toastSlice";
+import { Bar, Pie } from "react-chartjs-2";
 import { useDispatch } from "react-redux";
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
-const apiUrl = import.meta.env.VITE_BASE_URL;
-const apiPath = import.meta.env.VITE_API_PATH;
+import { API_BASE_URL, API_PATH, CHART_TOP_SALES_COUNT } from "../constants/api";
+import { pushMessage } from "../redux/toastSlice";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 export default function ChartView() {
   const dispatch = useDispatch();
@@ -15,11 +15,11 @@ export default function ChartView() {
 
   const getProducts = useCallback(async () => {
     try {
-      const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/products/all`);
+      const res = await axios.get(`${API_BASE_URL}/v2/api/${API_PATH}/products/all`);
       setProducts(res.data.products);
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["取得失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     }
   }, [dispatch]);
 
@@ -28,7 +28,7 @@ export default function ChartView() {
   }, [getProducts]);
 
   const topSales = useMemo(() => {
-    return [...products].sort((a, b) => b.sales - a.sales).slice(0, 10);
+    return [...products].sort((a, b) => b.sales - a.sales).slice(0, CHART_TOP_SALES_COUNT);
   }, [products]);
 
   const data = useMemo(() => {

@@ -1,15 +1,13 @@
+import { useEffect, useRef, useState, useCallback } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
 import DelModel from "../../components/modal/DelModel";
 import EditModel from "../../components/modal/EditModel";
 import PagePagination from "../../components/PagePagination";
-import { useNavigate } from "react-router-dom";
-
-import { useEffect, useRef, useState, useCallback } from "react";
-import axios from "axios";
-import { useDispatch } from "react-redux";
+import { API_BASE_URL, API_PATH } from "../../constants/api";
 import { pushMessage } from "../../redux/toastSlice";
-
-const apiUrl = import.meta.env.VITE_BASE_URL;
-const apiPath = import.meta.env.VITE_API_PATH;
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
@@ -19,7 +17,7 @@ export default function AdminProducts() {
   const getProducts = useCallback(
     async (page = 1) => {
       try {
-        const res = await axios.get(`${apiUrl}/v2/api/${apiPath}/admin/products?page=${page}`);
+        const res = await axios.get(`${API_BASE_URL}/v2/api/${API_PATH}/admin/products?page=${page}`);
         setProducts(res.data.products);
         setPagination(res.data.pagination);
       } catch (error) {
@@ -93,7 +91,7 @@ export default function AdminProducts() {
     const { value, name, type, checked } = e.target;
     setTempProduct({
       ...tempProduct,
-      [name]: type === "checked" ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
@@ -126,7 +124,7 @@ export default function AdminProducts() {
   //新增更新產品api
   const createProduct = async () => {
     try {
-      await axios.post(`${apiUrl}/v2/api/${apiPath}/admin/product`, {
+      await axios.post(`${API_BASE_URL}/v2/api/${API_PATH}/admin/product`, {
         data: {
           ...tempProduct,
           origin_price: Number(tempProduct.origin_price),
@@ -136,13 +134,13 @@ export default function AdminProducts() {
       });
       dispatch(pushMessage({ text: "新增成功", status: "success" }));
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["操作失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     }
   };
   const editProduct = async () => {
     try {
-      await axios.put(`${apiUrl}/v2/api/${apiPath}/admin/product/${tempProduct.id}`, {
+      await axios.put(`${API_BASE_URL}/v2/api/${API_PATH}/admin/product/${tempProduct.id}`, {
         data: {
           ...tempProduct,
           origin_price: Number(tempProduct.origin_price),
@@ -152,46 +150,44 @@ export default function AdminProducts() {
       });
       dispatch(pushMessage({ text: "編輯成功", status: "success" }));
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["操作失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     }
   };
   const updateProduct = async () => {
-    const apiCall = modelMode === "create" ? createProduct : editProduct;
-
     try {
-      const res = await apiCall();
-      if (res.data.success) {
-        getProducts();
-        closeProductModel();
-        dispatch(pushMessage({ text: "操作成功", status: "success" }));
+      if (modelMode === "create") {
+        await createProduct();
       } else {
-        dispatch(pushMessage({ text: res.data.message.join(","), status: "failed" }));
+        await editProduct();
       }
+      getProducts();
+      closeProductModel();
+      dispatch(pushMessage({ text: "操作成功", status: "success" }));
     } catch (error) {
-      const { message } = error.response?.data || { message: ["操作失敗"] };
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["操作失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     }
   };
 
   const delProduct = async () => {
     try {
-      await axios.delete(`${apiUrl}/v2/api/${apiPath}/admin/product/${tempProduct.id}`);
+      await axios.delete(`${API_BASE_URL}/v2/api/${API_PATH}/admin/product/${tempProduct.id}`);
       dispatch(pushMessage({ text: "刪除成功", status: "success" }));
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["操作失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     }
   };
 
   const logout = async () => {
     try {
-      await axios.post(`${apiUrl}/v2/logout`);
+      await axios.post(`${API_BASE_URL}/v2/logout`);
       dispatch(pushMessage({ text: "登出成功", status: "success" }));
       navigate("/");
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["操作失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     }
   };
 
@@ -201,8 +197,8 @@ export default function AdminProducts() {
       getProducts();
       closeDelModel();
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["操作失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     }
   };
 
@@ -218,7 +214,7 @@ export default function AdminProducts() {
     const formData = new FormData();
     formData.append("file-to-upload", file);
     try {
-      const res = await axios.post(`${apiUrl}/v2/api/${apiPath}/admin/upload`, formData);
+      const res = await axios.post(`${API_BASE_URL}/v2/api/${API_PATH}/admin/upload`, formData);
       const uploadImageUrl = res.data.imageUrl;
       setTempProduct({
         ...tempProduct,
@@ -226,8 +222,8 @@ export default function AdminProducts() {
       });
       dispatch(pushMessage({ text: "上傳成功", status: "success" }));
     } catch (error) {
-      const { message } = error.response.data;
-      dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+      const message = (error.response && error.response.data && error.response.data.message) || ["操作失敗"];
+      dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
     }
   };
 
