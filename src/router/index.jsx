@@ -1,17 +1,10 @@
 import { createHashRouter } from "react-router-dom";
 
-import AdminLayout from "../layout/AdminLayout";
 import FrontLayout from "../layout/FrontLayout";
-import AdminOrders from "../pages/admin/AdminOrder";
-import AdminProducts from "../pages/admin/AdminProducts";
-import CartsView from "../pages/CartsView";
-import ChartView from "../pages/ChartView";
-import CheckoutView from "../pages/CheckoutView";
 import HomeView from "../pages/HomeView";
 import NotfoundView from "../pages/NotfoundView";
-import ProductInner from "../pages/ProductInner";
-import ProductView from "../pages/ProductView";
-import LoginView from "../pages/LoginView";
+
+const page = (load) => () => load().then((m) => ({ Component: m.default }));
 
 const router = createHashRouter([
   {
@@ -24,41 +17,41 @@ const router = createHashRouter([
       },
       {
         path: "login",
-        element: <LoginView />,
+        lazy: page(() => import("../pages/LoginView")),
       },
       {
         path: "products",
-        element: <ProductView />,
+        lazy: page(() => import("../pages/ProductView")),
       },
       {
         path: "products/:id",
-        element: <ProductInner />,
+        lazy: page(() => import("../pages/ProductInner")),
       },
       {
         path: "cart",
-        element: <CartsView />,
+        lazy: page(() => import("../pages/CartsView")),
       },
       {
         path: "chart",
-        element: <ChartView />,
+        lazy: page(() => import("../pages/ChartView")),
       },
       {
         path: "checkout",
-        element: <CheckoutView />,
+        lazy: page(() => import("../pages/CheckoutView")),
       },
     ],
   },
   {
     path: "/admin",
-    element: <AdminLayout />,
+    lazy: page(() => import("../layout/AdminLayout")),
     children: [
       {
         path: "products",
-        element: <AdminProducts />,
+        lazy: page(() => import("../pages/admin/AdminProducts")),
       },
       {
         path: "orders",
-        element: <AdminOrders />,
+        lazy: page(() => import("../pages/admin/AdminOrder")),
       },
     ],
   },
