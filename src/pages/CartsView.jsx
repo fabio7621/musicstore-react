@@ -1,13 +1,16 @@
 import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import ReactLoading from "react-loading";
+import ReactLoadingModule from "react-loading";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { API_BASE_URL, API_PATH } from "../constants/api";
 import { clearCartData, updateCartData } from "../redux/cartSlice";
 import { pushMessage } from "../redux/toastSlice";
+
+// react-loading 是舊 CJS 套件，Vite 8 (rolldown) 打包時 default 會變成 { default: Component }
+const ReactLoading = ReactLoadingModule.default ?? ReactLoadingModule;
 
 export default function CartsView() {
   const [cart, setCart] = useState({ carts: [] });

@@ -1,12 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import ReactLoading from "react-loading";
+import ReactLoadingModule from "react-loading";
 import { useDispatch } from "react-redux";
 
 import PagePagination from "../components/PagePagination";
 import { API_BASE_URL, API_PATH } from "../constants/api";
 import { pushMessage } from "../redux/toastSlice";
+
+// react-loading 是舊 CJS 套件，Vite 8 (rolldown) 打包時 default 會變成 { default: Component }
+const ReactLoading = ReactLoadingModule.default ?? ReactLoadingModule;
 
 export default function ProductView() {
   const dispatch = useDispatch();
@@ -43,8 +46,8 @@ export default function ProductView() {
         setProducts(res.data.products);
         setFilteredProducts(res.data.products);
       } catch (error) {
-        const { message } = error.response.data;
-        dispatch(pushMessage({ text: message.join(","), status: "failed" }));
+        const message = (error.response && error.response.data && error.response.data.message) || ["取得失敗"];
+        dispatch(pushMessage({ text: Array.isArray(message) ? message.join(",") : message, status: "failed" }));
       } finally {
         setLoading(false);
       }
@@ -52,12 +55,8 @@ export default function ProductView() {
     [dispatch]
   );
 
-  const filterProductsByCategory = (category) => {
-    if (category !== currentCategory) {
-      setCurrentCategory(category);
-      getProducts(1, category === "all" ? "" : category);
-    }
-  };
+  // 換分類時由下方 useEffect 負責重新抓資料
+  const filterProductsByCategory = (category) => setCurrentCategory(category);
 
   const filterProducts = useCallback(() => {
     let tempProducts = [...products];
